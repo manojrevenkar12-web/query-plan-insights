@@ -54,8 +54,10 @@ export const chart = {
   sparkWidth: 120,
   sparkHeight: 28,
   stroke: 1.75,
-  padding: { top: 12, right: 12, bottom: 24, left: 52 },
+  padding: { top: 30, right: 12, bottom: 24, left: 52 },
   ticks: 4,
+  labelGap: 56, // marker labels closer than this go on the next row
+  labelRow: 12,
 } as const;
 
 export const motion = {

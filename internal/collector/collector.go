@@ -414,7 +414,9 @@ func (c *Collector) follow(in *store.Insight, q store.Query, _ detect.Window, re
 				x.ImpactMsPerS = (recent.Mean() - x.BaselineMs) * recent.CallsPerSec()
 			}
 		}
-		if res.Cause.Code != "" {
+		// a later window may lack evidence an earlier one had (no lock sample in it, say): only a diagnosis at least as
+		// confident replaces the current one
+		if res.Cause.Code != "" && res.Cause.Confidence >= x.Cause.Confidence {
 			x.Cause, x.Evidence, x.Suggestion = res.Cause, res.Evidence, res.Suggestion
 			if len(res.Changes) > 0 {
 				x.PlanChanges, x.PlanBefore, x.PlanAfter = res.Changes, res.PlanBefore, res.PlanAfter

@@ -228,3 +228,17 @@ func TestResourceContentionPointsAtTheBusyQuery(t *testing.T) {
 		t.Fatal("a database that is not busier is not contention")
 	}
 }
+
+func TestLockWaitsAreNotMistakenForABusierDatabase(t *testing.T) {
+	c := cfg
+	c.ContentionRatioMin = 2
+	locked := slow
+	locked.Lock = 12
+	r := Regression(c, Input{Query: query(fixture(t, "index_scan.json")), SuspectedAt: at(21), Base: base, Recent: locked,
+		Tables: noTables, DBBase: detect.Window{Ms: 2600, Seconds: 12}, DBRecent: detect.Window{Ms: 7260, Seconds: 3}})
+	for _, c := range r.Ranked {
+		if c.Code == "RESOURCE_CONTENTION" {
+			t.Fatalf("blocked calls inflate database time; that is lock contention: %+v", r.Ranked)
+		}
+	}
+}

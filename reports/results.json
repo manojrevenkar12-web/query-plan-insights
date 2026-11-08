@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-08T12:22:52.269572489Z",
+  "generatedAt": "2026-11-08T12:25:08.959464218Z",
   "heldoutPin": "79f650126851d9dacff5493b570c8cd922d97d41b9a90fc0b7758f6f649c469e",
   "heldoutRuns": 1,
   "dev": {
     "set": "dev",
-    "generatedAt": "2026-11-08T12:13:35.373138983Z",
+    "generatedAt": "2026-11-08T12:24:15.234603028Z",
     "detector": {
       "baselineSeconds": 12,
       "recentSeconds": 3,
@@ -44,7 +44,7 @@
       "falseAlarms": 0,
       "medianDetectSeconds": 3.000597537,
       "maxDetectSeconds": 3.999538565,
-      "medianResolveSeconds": 5.994673829,
+      "medianResolveSeconds": 5.988923114,
       "errors": 0
     },
     "outcomes": [
@@ -126,24 +126,24 @@
         "wantCause": "LOCK_CONTENTION",
         "wantInSuggestion": "$HOLDER_PID",
         "detected": true,
-        "detectSeconds": 3.000544445,
+        "detectSeconds": 2.999940168,
         "causeAtOpen": "LOCK_CONTENTION",
         "causeCorrect": true,
         "finalCause": "LOCK_CONTENTION",
         "finalCauseCorrect": true,
-        "suggestion": "Find the transaction holding the lock and shorten it. SELECT pid, xact_start, state, query FROM pg_stat_activity WHERE pid = 13028;",
+        "suggestion": "Find the transaction holding the lock and shorten it. SELECT pid, xact_start, state, query FROM pg_stat_activity WHERE pid = 20337;",
         "suggestionCorrect": true,
-        "baselineMs": 0.0551486473029045,
-        "worstMs": 145.23575818333345,
+        "baselineMs": 0.057605433333333296,
+        "worstMs": 143.6710385999999,
         "resolved": true,
-        "resolveSeconds": 5.997114953,
-        "verification": "back to 0.06 ms from a worst of 145.24 ms (baseline 0.06 ms)",
+        "resolveSeconds": 5.988923114,
+        "verification": "back to 0.05 ms from a worst of 143.67 ms (baseline 0.06 ms)",
         "falseAlarms": [],
         "insights": 1,
         "workload": {
-          "issued": 11384,
+          "issued": 11376,
           "errors": 0,
-          "dropped": 3
+          "dropped": 0
         }
       },
       {

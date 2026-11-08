@@ -51,6 +51,14 @@ export function LatencyChart({ series, baselineMs, markers = [], title }: { seri
     return t >= t0 && t <= t1;
   });
 
+  // marker labels sit above the plot; one that would overlap its left neighbour moves up a row
+  const placed: Array<{ mk: Marker; px: number; row: number }> = [];
+  for (const mk of [...inRange].sort((a, b) => a.at.localeCompare(b.at))) {
+    const px = x(new Date(mk.at).getTime());
+    const prev = placed[placed.length - 1];
+    const row = prev && px - prev.px < chart.labelGap && prev.row === 0 ? 1 : 0;
+    placed.push({ mk, px, row });
+  }
   return (
     <figure ref={ref} style={{ margin: 0 }}>
       <svg className="chart" width={width} height={h} role="img" aria-labelledby={id}>
@@ -63,17 +71,14 @@ export function LatencyChart({ series, baselineMs, markers = [], title }: { seri
             </text>
           </g>
         ))}
-        {inRange.map((mk) => {
-          const px = x(new Date(mk.at).getTime());
-          return (
-            <g key={mk.label + mk.at}>
-              <line x1={px} x2={px} y1={pad.top} y2={h - pad.bottom} stroke={mk.tone} strokeWidth={1} strokeDasharray="3 3" />
-              <text x={px + 4} y={h - 6} style={{ fill: mk.tone }}>
-                {mk.label}
-              </text>
-            </g>
-          );
-        })}
+        {placed.map(({ mk, px, row }) => (
+          <g key={mk.label + mk.at}>
+            <line x1={px} x2={px} y1={pad.top - row * chart.labelRow - 8} y2={h - pad.bottom} stroke={mk.tone} strokeWidth={1} strokeDasharray="3 3" />
+            <text x={px + 4} y={pad.top - row * chart.labelRow - 10} style={{ fill: mk.tone }}>
+              {mk.label}
+            </text>
+          </g>
+        ))}
         {baselineMs ? (
           <line x1={pad.left} x2={width - pad.right} y1={y(baselineMs)} y2={y(baselineMs)} stroke={color.green} strokeWidth={1.25} strokeDasharray="6 4" />
         ) : null}

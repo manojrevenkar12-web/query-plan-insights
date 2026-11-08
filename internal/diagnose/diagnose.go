@@ -175,7 +175,9 @@ func Regression(cfg config.Diagnosis, in Input) Result {
 			store.Suggestion{Text: "Look for a plan that reads less, or for memory pressure on the server."}})
 	}
 
-	if dbNow, dbThen := perSecond(in.DBRecent), perSecond(in.DBBase); !planChanged && dbThen > 0 && dbNow >= cfg.ContentionRatioMin*dbThen {
+	if dbNow, dbThen := perSecond(in.DBRecent), perSecond(in.DBBase); !planChanged && lockNow < cfg.LockShareMin && dbThen > 0 &&
+		dbNow >= cfg.ContentionRatioMin*dbThen {
+		// queries waiting on a lock add to database time too, so a busier database is not evidence while they wait
 		r.Evidence = append(r.Evidence, fmt.Sprintf("database time %.0f -> %.0f ms per second across all queries", dbThen, dbNow))
 		s := store.Suggestion{Text: "The plan did not change; the whole database got busier. Fix what is taking the time first."}
 		if in.TopConsumer != "" {

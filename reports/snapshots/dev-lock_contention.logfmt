@@ -1,2 +1,2 @@
-level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=-2853304595449581812 cause=LOCK_CONTENTION baseline_ms=0.055 current_ms=68.710 impact_ms_per_s=1633.7
-level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=-2853304595449581812 cause=LOCK_CONTENTION baseline_ms=0.055 current_ms=0.064 impact_ms_per_s=0.0
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=5156057425996636858 cause=LOCK_CONTENTION baseline_ms=0.058 current_ms=70.111 impact_ms_per_s=1681.4
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=5156057425996636858 cause=LOCK_CONTENTION baseline_ms=0.058 current_ms=0.050 impact_ms_per_s=0.0

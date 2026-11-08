@@ -15,7 +15,7 @@ Held-out set pinned at `79f650126851`, run 1 time(s). Per-scenario detail: [repo
 
 ## Development set
 
-Run 2026-11-08T12:13:35Z.
+Run 2026-11-08T12:24:15Z.
 
 | Scenario | Target query | Detected after | Cause at open (expected) | Fix suggested | Fix confirmed after | Also flagged (expected) | False alarms |
 |---|---|---|---|---|---|---|---|
@@ -30,7 +30,7 @@ What each scenario does, and the verification text the collector wrote when the 
 
 - **drop_index**: A migration drops the index the order history page relies on. Verified: _back to 0.08 ms from a worst of 24.62 ms (baseline 0.08 ms); after index orders_customer_idx was created_.
 - **planner_setting**: Someone sets random_page_cost far too high on the server, and index scans lose to sequential scans. Verified: _back to 0.07 ms from a worst of 149.13 ms (baseline 0.08 ms); after random_page_cost changed to 4_.
-- **lock_contention**: A batch job holds row locks on the hottest products in long transactions. Verified: _back to 0.06 ms from a worst of 145.24 ms (baseline 0.06 ms)_.
+- **lock_contention**: A batch job holds row locks on the hottest products in long transactions. Verified: _back to 0.05 ms from a worst of 143.67 ms (baseline 0.06 ms)_.
 - **work_mem_spill**: work_mem is cut on the server: the order ranking report spills its sort to disk, and the top-customers report switches to a slower plan. Verified: _back to 63.78 ms from a worst of 108.47 ms (baseline 71.38 ms); after work_mem changed to 65536_.
 - **n_plus_one**: A release replaces the batched basket lookup with one query per product. Verified: _back to 0.00 ms from a worst of 0.03 ms (baseline 0.00 ms)_.
 - **control**: Nothing changes. Any insight is a false alarm.

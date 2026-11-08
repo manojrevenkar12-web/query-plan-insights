@@ -127,6 +127,7 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: var(--sp-3);
   padding: var(--sp-2) var(--sp-3);
   border-radius: var(--r-control);
   color: var(--c-ink);
@@ -456,6 +457,11 @@ button {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--sp-4);
+}
+
+.plans > div,
+.grid-2 > * {
+  min-width: 0;
 }
 
 .plan {

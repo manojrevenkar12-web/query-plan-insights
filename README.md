@@ -22,6 +22,12 @@ Collector overhead: 1.0% of closed-loop point-lookup throughput (11017 vs 11127 
 Held-out set pinned at `79f650126851`, run 1 time(s). Per-scenario detail: [reports/RESULTS.md](reports/RESULTS.md).
 <!-- results:end -->
 
+**What the held-out run caught.** In `row_lock_holder` the insight opened with the right cause (lock waits, blocker
+pid named), but a second later a window without lock samples re-diagnosed it as a busier database and replaced the
+suggestion. Two fixes followed, after the run and with tests: a re-diagnosis may only replace a cause it is at least as
+confident about, and lock waits no longer count as evidence of a busier database. The development set still passes
+5/5 with them. The held-out numbers above are from before the fixes; the held-out set was not run again.
+
 ![An insight: the index behind a query was dropped](docs/img/insight-drop-index.png)
 
 ## The problem

@@ -9,8 +9,9 @@ import (
 // Insight is what a developer acts on: what got slower, by how much, why, and what to do.
 type Insight struct {
 	ID           int           `json:"id"`
-	Kind         string        `json:"kind"` // LATENCY_REGRESSION, NEW_HEAVY_QUERY
-	QueryID      int64         `json:"queryId"`
+	Kind         string        `json:"kind"`             // LATENCY_REGRESSION, NEW_HEAVY_QUERY
+	Signal       string        `json:"signal,omitempty"` // latency, spill: which detector rule opened it
+	QueryID      int64         `json:"queryId,string"`
 	Query        string        `json:"query"`
 	Status       string        `json:"status"` // OPEN, RESOLVED
 	OpenedAt     time.Time     `json:"openedAt"`

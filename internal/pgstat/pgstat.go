@@ -108,8 +108,9 @@ func (r Reader) Activity(ctx context.Context) ([]Activity, error) {
 
 // Indexes returns every user index.
 func (r Reader) Indexes(ctx context.Context) ([]Index, error) {
+	// indexdef is NULL for an index dropped between the catalog scan and pg_get_indexdef
 	rows, err := r.DB.QueryContext(ctx, `SELECT schemaname, tablename, indexname, indexdef FROM pg_indexes
-		WHERE schemaname NOT IN ('pg_catalog', 'information_schema') ORDER BY 1, 2, 3`)
+		WHERE schemaname NOT IN ('pg_catalog', 'information_schema') AND indexdef IS NOT NULL ORDER BY 1, 2, 3`)
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +210,7 @@ func (r Reader) Explain(ctx context.Context, query string, timeout time.Duration
 	}
 	defer tx.Rollback() //nolint:errcheck // read-only, nothing to keep
 	var out string
-	err = tx.QueryRowContext(ctx, "EXPLAIN (GENERIC_PLAN, FORMAT JSON) "+query).Scan(&out)
+	err = tx.QueryRowContext(ctx, "EXPLAIN (GENERIC_PLAN, VERBOSE, FORMAT JSON) "+query).Scan(&out)
 	if err != nil {
 		return nil, err
 	}

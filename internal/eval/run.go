@@ -164,9 +164,15 @@ func (h *holder) Stop() error {
 	return h.err
 }
 
-var space = regexp.MustCompile(`\s+`)
+var (
+	space    = regexp.MustCompile(`\s+`)
+	constant = regexp.MustCompile(`\$\d+|'[^']*'|\b\d+(\.\d+)?\b`)
+)
 
-func normal(s string) string { return strings.TrimSpace(space.ReplaceAllString(s, " ")) }
+// normal compares statements the way pg_stat_statements does: constants and parameters are the same placeholder.
+func normal(s string) string {
+	return strings.TrimSpace(space.ReplaceAllString(constant.ReplaceAllString(s, "?"), " "))
+}
 
 // names maps the store's query ids to the workload's query names by their text.
 func names(st *store.Store, app workload.App) map[int64]string {

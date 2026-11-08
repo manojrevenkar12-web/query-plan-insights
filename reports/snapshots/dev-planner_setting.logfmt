@@ -1,0 +1,18 @@
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="random_page_cost" before="4" after="4000"
+level=info msg="plan changed" query_id=7854854763783650117 fingerprint=f807e8c68b16
+level=info msg="plan changed" query_id=655025610288553713 fingerprint=a82f088e0a59
+level=info msg="plan changed" query_id=-467926131754302272 fingerprint=5934b294e528
+level=info msg="plan changed" query_id=-7670606513251105305 fingerprint=5934b294e528
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=655025610288553713 cause=SETTING_CHANGE baseline_ms=0.052 current_ms=62.344 impact_ms_per_s=1644.6
+level=warn msg="query regression" insight=2 kind=LATENCY_REGRESSION query_id=7854854763783650117 cause=SETTING_CHANGE baseline_ms=0.077 current_ms=80.802 impact_ms_per_s=1905.2
+level=warn msg="query regression" insight=3 kind=LATENCY_REGRESSION query_id=6841063520269704585 cause=RESOURCE_CONTENTION baseline_ms=144.647 current_ms=680.587 impact_ms_per_s=1071.8
+level=warn msg="query regression" insight=4 kind=LATENCY_REGRESSION query_id=7393830528137617632 cause=RESOURCE_CONTENTION baseline_ms=113.584 current_ms=496.994 impact_ms_per_s=920.1
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="random_page_cost" before="4000" after="4"
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=655025610288553713 cause=SETTING_CHANGE baseline_ms=0.052 current_ms=0.051 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=3 kind=LATENCY_REGRESSION query_id=6841063520269704585 cause=RESOURCE_CONTENTION baseline_ms=144.647 current_ms=127.716 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=4 kind=LATENCY_REGRESSION query_id=7393830528137617632 cause=RESOURCE_CONTENTION baseline_ms=113.584 current_ms=89.411 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=2 kind=LATENCY_REGRESSION query_id=7854854763783650117 cause=SETTING_CHANGE baseline_ms=0.077 current_ms=0.075 impact_ms_per_s=0.0
+level=info msg="plan changed" query_id=655025610288553713 fingerprint=7d0cfe176dfd
+level=info msg="plan changed" query_id=7854854763783650117 fingerprint=7db9a5975dbf
+level=info msg="plan changed" query_id=-467926131754302272 fingerprint=61b509cd2c48
+level=info msg="plan changed" query_id=-7670606513251105305 fingerprint=61b509cd2c48

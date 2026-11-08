@@ -76,6 +76,9 @@ func Score(set string, rec Recording) Outcome {
 			// a second insight on the target, or one that opened after the fix: neither a hit nor a false alarm
 		case allowed[name]:
 			o.CollateralFound = append(o.CollateralFound, name)
+		case in.CauseAtOpen == "RESOURCE_CONTENTION" && in.OpenedAt.Before(t1):
+			// slower only because the fault made the whole database busier, and diagnosed as exactly that
+			o.CollateralFound = append(o.CollateralFound, name+" (contention)")
 		default:
 			o.FalseAlarms = append(o.FalseAlarms, name)
 		}

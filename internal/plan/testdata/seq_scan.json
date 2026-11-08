@@ -1,0 +1,26 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Limit", "Startup Cost": 5497.09, "Total Cost": 5497.43, "Plan Rows": 4, "Plan Width": 22,
+      "Plans": [
+        {
+          "Node Type": "Gather Merge", "Parent Relationship": "Outer", "Startup Cost": 5497.09, "Total Cost": 5497.43,
+          "Plan Rows": 4, "Workers Planned": 1,
+          "Plans": [
+            {
+              "Node Type": "Sort", "Parent Relationship": "Outer", "Startup Cost": 4497.08, "Total Cost": 4497.09,
+              "Plan Rows": 4, "Sort Key": ["orders.created_at DESC"],
+              "Plans": [
+                {
+                  "Node Type": "Seq Scan", "Parent Relationship": "Outer", "Relation Name": "orders", "Schema": "shop",
+                  "Alias": "orders", "Startup Cost": 0.0, "Total Cost": 4497.06, "Plan Rows": 4,
+                  "Filter": "(orders.customer_id = $1)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

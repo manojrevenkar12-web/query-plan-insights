@@ -24,7 +24,7 @@ type SeriesPoint struct {
 
 // QueryRow is one line of the overview table.
 type QueryRow struct {
-	ID          int64     `json:"id"`
+	ID          int64     `json:"id,string"`
 	Text        string    `json:"text"`
 	CallsPerSec float64   `json:"callsPerSec"`
 	MeanMs      float64   `json:"meanMs"`
@@ -64,7 +64,7 @@ type PlanView struct {
 
 // QueryDetail is the drill-down for one query.
 type QueryDetail struct {
-	ID           int64         `json:"id"`
+	ID           int64         `json:"id,string"`
 	Text         string        `json:"text"`
 	FirstSeen    time.Time     `json:"firstSeen"`
 	Series       []SeriesPoint `json:"series"`
@@ -131,8 +131,8 @@ func (v View) Overview() Overview {
 	for _, id := range ids {
 		q, _ := v.Store.Query(id)
 		pts := since(q.Points, from)
-		recent := detect.Sum(pts, recentFrom, now.Add(time.Nanosecond))
-		all := detect.Sum(pts, from, now.Add(time.Nanosecond))
+		recent := detect.Sum(pts, recentFrom, now)
+		all := detect.Sum(pts, from, now)
 		row := QueryRow{ID: id, Text: q.Text, CallsPerSec: recent.CallsPerSec(), MeanMs: recent.Mean(),
 			LoadMsPerS: all.Ms / all.Seconds, Status: "OK"}
 		for _, p := range pts {

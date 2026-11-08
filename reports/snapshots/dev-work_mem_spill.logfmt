@@ -1,0 +1,6 @@
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="work_mem" before="65536" after="64"
+level=info msg="plan changed" query_id=-2980982973274514087 fingerprint=d2821531db50
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=-3497990934450612673 cause=SPILL_TO_DISK baseline_ms=71.378 current_ms=83.674 impact_ms_per_s=29.5
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="work_mem" before="64" after="65536"
+level=info msg="plan changed" query_id=-2980982973274514087 fingerprint=bf7c60e8a186
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=-3497990934450612673 cause=SPILL_TO_DISK baseline_ms=71.378 current_ms=63.779 impact_ms_per_s=0.0

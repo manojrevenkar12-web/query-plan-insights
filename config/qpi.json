@@ -12,13 +12,15 @@
     "baselineSeconds": 12,
     "recentSeconds": 3,
     "minCalls": 5,
-    "latencyRatio": 2.5,
+    "latencyRatio": 2.0,
     "minDeltaMillis": 1.0,
     "persistTicks": 3,
     "resolveTolerance": 0.5,
     "warmupSeconds": 8,
     "newQueryShareOfCalls": 0.25,
-    "newQueryMinCallsPerSecond": 50
+    "newQueryMinCallsPerSecond": 50,
+    "spillTempBlocksPerCall": 1.0,
+    "spillLatencyRatio": 1.1
   },
   "diagnosis": {
     "eventLookbackSeconds": 60,
@@ -27,7 +29,8 @@
     "readRatioMin": 3.0,
     "rowsRatioMin": 2.0,
     "modSinceAnalyzeShareMin": 0.2,
-    "estimateErrorMin": 10.0
+    "estimateErrorMin": 10.0,
+    "contentionRatioMin": 2.0
   },
   "api": { "listen": ":8080", "overviewRows": 20, "windowSeconds": 300 },
   "eval": {

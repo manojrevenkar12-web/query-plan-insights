@@ -21,10 +21,20 @@ import (
 
 type waits struct{ samples, lock, io, cpu int }
 
+// Source is what the collector reads; pgstat.Reader reads it from PostgreSQL.
+type Source interface {
+	Statements(ctx context.Context) ([]pgstat.Statement, error)
+	Activity(ctx context.Context) ([]pgstat.Activity, error)
+	Indexes(ctx context.Context) ([]pgstat.Index, error)
+	Settings(ctx context.Context, role string) (map[string]string, error)
+	Tables(ctx context.Context) ([]pgstat.TableStats, error)
+	Explain(ctx context.Context, query string, timeout time.Duration) ([]byte, error)
+}
+
 // Collector is one database's poller.
 type Collector struct {
 	cfg          config.Config
-	reader       pgstat.Reader
+	reader       Source
 	st           *store.Store
 	workloadRole string
 	log          io.Writer
@@ -33,8 +43,7 @@ type Collector struct {
 	prev         map[int64]pgstat.Statement
 	prevIndexes  map[string]pgstat.Index
 	prevSettings map[string]string
-	suspect      map[int64]int
-	suspectedAt  map[int64]time.Time
+	trackers     map[int64]*detect.Tracker
 	newSeen      map[int64]bool
 
 	mu  sync.Mutex
@@ -50,9 +59,9 @@ func (c *Collector) Stats() (int, time.Duration) {
 }
 
 // New creates a collector. workloadRole lets it see per-role setting overrides (ALTER ROLE ... SET).
-func New(cfg config.Config, r pgstat.Reader, st *store.Store, workloadRole string, log io.Writer) *Collector {
+func New(cfg config.Config, r Source, st *store.Store, workloadRole string, log io.Writer) *Collector {
 	return &Collector{cfg: cfg, reader: r, st: st, workloadRole: workloadRole, log: log, now: time.Now,
-		prev: map[int64]pgstat.Statement{}, suspect: map[int64]int{}, suspectedAt: map[int64]time.Time{},
+		prev: map[int64]pgstat.Statement{}, trackers: map[int64]*detect.Tracker{},
 		newSeen: map[int64]bool{}, acc: map[int64]*waits{}}
 }
 
@@ -250,7 +259,7 @@ func (c *Collector) explain(ctx context.Context, now time.Time) {
 		if !pgstat.Explainable(q.Text) {
 			continue
 		}
-		w := detect.Sum(q.Points, window, now.Add(time.Nanosecond))
+		w := detect.Sum(q.Points, window, now)
 		loads = append(loads, load{id, w.Ms})
 	}
 	sort.Slice(loads, func(i, j int) bool {
@@ -258,7 +267,7 @@ func (c *Collector) explain(ctx context.Context, now time.Time) {
 	})
 	every := time.Duration(c.cfg.Collector.ExplainEverySeconds) * time.Second
 	for i, l := range loads {
-		urgent := c.suspect[l.id] == 1
+		urgent := c.trackers[l.id] != nil && c.trackers[l.id].Suspected()
 		if !urgent && (i >= c.cfg.Collector.ExplainTopN || !c.st.NeedsExplain(l.id, now, every)) {
 			continue
 		}
@@ -282,26 +291,28 @@ func (c *Collector) explain(ctx context.Context, now time.Time) {
 func (c *Collector) detect(now time.Time) {
 	d := c.cfg.Detector
 	warm := now.Sub(c.st.Started()) >= time.Duration(d.WarmupSeconds)*time.Second
-	dbRecent := detect.Sum(c.st.DBPoints(now.Add(-time.Duration(d.RecentSeconds)*time.Second)), time.Time{}, now.Add(time.Nanosecond))
-	for _, id := range c.st.QueryIDs() {
+	recentFrom := now.Add(-time.Duration(d.RecentSeconds) * time.Second)
+	dbRecent := detect.Sum(c.st.DBPoints(recentFrom), recentFrom, now)
+	ids := c.st.QueryIDs()
+	defer c.prune(ids)
+	for _, id := range ids {
 		q, _ := c.st.Query(id)
 		base, recent := detect.Windows(d, q.Points, now)
 		if open := c.st.OpenFor(id); open != nil {
 			c.follow(open, q, base, recent, now)
 			continue
 		}
-		if detect.Slower(d, base, recent) {
-			c.suspect[id]++
-			if c.suspect[id] == 1 {
-				c.suspectedAt[id] = now
-			}
-			if c.suspect[id] >= d.PersistTicks && warm {
-				c.open(q, base, recent, now)
-				c.suspect[id] = 0
+		tr := c.trackers[id]
+		if tr == nil {
+			tr = &detect.Tracker{}
+			c.trackers[id] = tr
+		}
+		if v := tr.Step(d, q.Points, now); v.Signal != "" {
+			if v.Open && warm {
+				c.open(q, v, now)
 			}
 			continue
 		}
-		c.suspect[id] = 0
 		if !warm || c.newSeen[id] || q.FirstSeen.Before(c.st.Started().Add(time.Duration(d.WarmupSeconds)*time.Second)) {
 			continue
 		}
@@ -318,10 +329,24 @@ func (c *Collector) detect(now time.Time) {
 	}
 }
 
-func (c *Collector) open(q store.Query, base, recent detect.Window, now time.Time) {
-	res := c.diagnose(q, base, recent, c.suspectedAt[q.ID])
-	in := c.st.OpenInsight(&store.Insight{Kind: "LATENCY_REGRESSION", QueryID: q.ID, Query: q.Text, OpenedAt: now,
-		SuspectedAt: c.suspectedAt[q.ID], BaselineMs: base.Mean(), CurrentMs: recent.Mean(), CallsPerSec: recent.CallsPerSec(),
+// forget trackers of queries the store no longer holds
+func (c *Collector) prune(ids []int64) {
+	known := make(map[int64]bool, len(ids))
+	for _, id := range ids {
+		known[id] = true
+	}
+	for id := range c.trackers {
+		if !known[id] {
+			delete(c.trackers, id)
+		}
+	}
+}
+
+func (c *Collector) open(q store.Query, v detect.Verdict, now time.Time) {
+	base, recent := v.Base, v.Recent
+	res := c.diagnose(q, base, recent, v.Onset)
+	in := c.st.OpenInsight(&store.Insight{Kind: "LATENCY_REGRESSION", Signal: v.Signal, QueryID: q.ID, Query: q.Text, OpenedAt: now,
+		SuspectedAt: v.Onset, BaselineMs: base.Mean(), CurrentMs: recent.Mean(), CallsPerSec: recent.CallsPerSec(),
 		ImpactMsPerS: (recent.Mean() - base.Mean()) * recent.CallsPerSec(), Cause: res.Cause, CauseAtOpen: res.Cause.Code,
 		Evidence: res.Evidence, PlanChanges: res.Changes, PlanBefore: res.PlanBefore, PlanAfter: res.PlanAfter,
 		Suggestion: res.Suggestion})
@@ -334,19 +359,49 @@ func (c *Collector) diagnose(q store.Query, base, recent detect.Window, suspecte
 	if b, ok := c.st.TopBlocker(q.ID); ok {
 		blocker = &b
 	}
+	d := c.cfg.Detector
+	from := suspected.Add(-time.Duration(d.BaselineSeconds) * time.Second)
+	now := c.now()
+	dbAll := c.st.DBPoints(from)
 	return diagnose.Regression(c.cfg.Diagnosis, diagnose.Input{Query: q, SuspectedAt: suspected, Base: base, Recent: recent,
-		Events: c.st.Events(suspected.Add(-lookback)), Tables: c.st.Table, Blocker: blocker})
+		Events: c.st.Events(suspected.Add(-lookback)), Tables: c.st.Table, Blocker: blocker,
+		DBBase: detect.Sum(dbAll, from, suspected), DBRecent: detect.Sum(dbAll, suspected, now),
+		TopConsumer: c.topConsumer(q.ID, from, suspected, now)})
+}
+
+// topConsumer is the query, other than this one, whose database time per second grew the most since the onset.
+func (c *Collector) topConsumer(self int64, from, onset, now time.Time) string {
+	best, text := 0.0, ""
+	for _, id := range c.st.QueryIDs() {
+		if id == self {
+			continue
+		}
+		q, _ := c.st.Query(id)
+		before, after := detect.Sum(q.Points, from, onset), detect.Sum(q.Points, onset, now)
+		var gain float64
+		if before.Seconds > 0 && after.Seconds > 0 {
+			gain = after.Ms/after.Seconds - before.Ms/before.Seconds
+		}
+		if gain > best {
+			best, text = gain, q.Text
+		}
+	}
+	return text
 }
 
 // follow keeps an open insight current: impact, a diagnosis that improves as evidence arrives, and resolution.
 func (c *Collector) follow(in *store.Insight, q store.Query, _ detect.Window, recent detect.Window, now time.Time) {
 	d := c.cfg.Detector
 	healthy := detect.Recovered(d, in.BaselineMs, recent)
+	if in.Signal == "spill" {
+		healthy = healthy && recent.PerCall(recent.Temp) < d.SpillTempBlocksPerCall
+	}
 	if in.Kind == "NEW_HEAVY_QUERY" {
 		healthy = recent.CallsPerSec() < d.NewQueryMinCallsPerSecond/2
 	}
 	var res diagnose.Result
 	if !healthy && recent.Calls >= d.MinCalls && in.Kind == "LATENCY_REGRESSION" {
+		// the baseline is the intervals before the onset
 		base := detect.Sum(q.Points, in.SuspectedAt.Add(-time.Duration(d.BaselineSeconds)*time.Second), in.SuspectedAt)
 		res = c.diagnose(q, base, recent, in.SuspectedAt)
 	}
@@ -371,11 +426,13 @@ func (c *Collector) follow(in *store.Insight, q store.Query, _ detect.Window, re
 			x.ResolvedAt = &t
 			x.ResolvedMs = recent.Mean()
 			x.ImpactMsPerS = 0
-			x.Verification = c.verification(x, q, now)
 			resolved = true
 		}
 	})
 	if resolved {
+		// the collector goroutine is the only writer of insights, so reading this one outside the lock is safe
+		v := c.verification(in, q, now)
+		c.st.Update(in, func(x *store.Insight) { x.Verification = v })
 		c.logInsight("query recovered", in)
 	}
 }

@@ -38,7 +38,7 @@ func Shop() App {
 		Seed: []string{
 			`INSERT INTO shop.customers SELECT g, 'customer ' || g, (ARRAY['GB','DE','FR','IN','US'])[1 + g % 5] FROM generate_series(1, 50000) g`,
 			`INSERT INTO shop.products SELECT g, 'product ' || g, (g % 500) + 0.99, 1000000 FROM generate_series(1, 2000) g`,
-			`INSERT INTO shop.orders SELECT g, 1 + (g * 7919) % 50000, now() - ((g % 720) || ' hours')::interval,
+			`INSERT INTO shop.orders SELECT g, 1 + (g::bigint * 7919) % 50000, now() - ((g % 720) || ' hours')::interval,
 				(ARRAY['paid','shipped','cancelled','refunded'])[1 + g % 4], (g % 900) + 10.5 FROM generate_series(1, 300000) g`,
 			`INSERT INTO shop.order_items SELECT 1 + (g % 300000), 1 + (g * 31) % 2000, 1 + g % 3 FROM generate_series(1, 600000) g`,
 			`CREATE INDEX orders_customer_idx ON shop.orders (customer_id)`,
@@ -57,6 +57,9 @@ func Shop() App {
 			{Name: "top_customers", SQL: `SELECT customer_id, sum(total) AS spend FROM shop.orders WHERE created_at >= now() - $1::interval
 				GROUP BY customer_id ORDER BY spend DESC LIMIT 10`,
 				PerSec: 2, Workers: 2, Args: func(r *Rand) []any { return []any{"240 hours"} }},
+			{Name: "rank_orders", SQL: `SELECT id, customer_id, total, rank() OVER (PARTITION BY status ORDER BY total DESC) AS r
+				FROM shop.orders WHERE created_at >= now() - $1::interval ORDER BY r, id LIMIT 50`,
+				PerSec: 2, Workers: 2, Args: func(r *Rand) []any { return []any{"72 hours"} }},
 		},
 		Batch: Query{Name: "basket_products", SQL: `SELECT id, name, price FROM shop.products WHERE id = ANY($1)`,
 			PerSec: 6, Workers: 2, Args: func(r *Rand) []any { return []any{r.IDArray(20, 2000)} }},
@@ -80,7 +83,7 @@ func Billing() App {
 		},
 		Seed: []string{
 			`INSERT INTO billing.accounts SELECT g, (ARRAY['free','team','business'])[1 + g % 3], 0 FROM generate_series(1, 20000) g`,
-			`INSERT INTO billing.invoices SELECT g, 1 + (g * 104729) % 20000, now() - ((g % 1000) || ' hours')::interval,
+			`INSERT INTO billing.invoices SELECT g, 1 + (g::bigint * 104729) % 20000, now() - ((g % 1000) || ' hours')::interval,
 				(g % 400) + 5, (ARRAY['open','paid','void'])[1 + g % 3] FROM generate_series(1, 400000) g`,
 			`INSERT INTO billing.payments SELECT g, 1 + (g * 13) % 400000, now() - ((g % 900) || ' hours')::interval, (g % 400) + 5
 				FROM generate_series(1, 250000) g`,

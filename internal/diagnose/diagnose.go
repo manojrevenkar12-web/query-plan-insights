@@ -24,6 +24,10 @@ type Input struct {
 	Events      []store.Event
 	Tables      func(rel string) (store.TableInfo, bool)
 	Blocker     *store.Blocker
+	// DBBase and DBRecent are whole-database totals over the same windows; TopConsumer is the query that gained the
+	// most database time meanwhile (not this one).
+	DBBase, DBRecent detect.Window
+	TopConsumer      string
 }
 
 // Result is the ranked diagnosis.
@@ -87,7 +91,12 @@ func Regression(cfg config.Diagnosis, in Input) Result {
 			r.Evidence = append(r.Evidence, fmt.Sprintf("setting %s changed %s -> %s at %s", e.Name, e.Before, e.After, e.At.Format(time.TimeOnly)))
 			if e.Name == "work_mem" && in.Recent.PerCall(in.Recent.Temp) >= cfg.TempBlocksPerCallMin {
 				cands = append(cands, candidate{store.Cause{Code: "SPILL_TO_DISK", Confidence: 0.95,
-					Summary: fmt.Sprintf("work_mem dropped from %s to %s, so sorts and hashes spill to disk", e.Before, e.After)},
+					Summary: fmt.Sprintf("work_mem dropped from %s to %s, so sorts and hashes spill to disk", humanKB(e.Before), humanKB(e.After))},
+					store.Suggestion{Text: "Restore work_mem where it was changed.", SQL: fmt.Sprintf("-- where it was changed: SET work_mem = '%s'", humanKB(e.Before))}})
+			} else if e.Name == "work_mem" && planChanged {
+				cands = append(cands, candidate{store.Cause{Code: "SETTING_CHANGE", Confidence: 0.85,
+					Summary: fmt.Sprintf("work_mem dropped from %s to %s and the planner chose a slower plan that fits in memory",
+						humanKB(e.Before), humanKB(e.After))},
 					store.Suggestion{Text: "Restore work_mem where it was changed.", SQL: fmt.Sprintf("-- where it was changed: SET work_mem = '%s'", humanKB(e.Before))}})
 			} else if e.Name != "work_mem" && planChanged {
 				cands = append(cands, candidate{store.Cause{Code: "SETTING_CHANGE", Confidence: 0.9,
@@ -138,7 +147,13 @@ func Regression(cfg config.Diagnosis, in Input) Result {
 				store.Suggestion{Text: "Refresh the statistics, then check the plan again.", SQL: "ANALYZE " + stale + ";"}})
 		}
 		cols := after.FilterColumns()
-		for rel, cs := range cols {
+		scanned := make([]string, 0, len(cols))
+		for rel := range cols {
+			scanned = append(scanned, rel)
+		}
+		sort.Strings(scanned)
+		for _, rel := range scanned {
+			cs := cols[rel]
 			cands = append(cands, candidate{store.Cause{Code: "PLAN_CHANGE", Confidence: 0.5,
 				Summary: fmt.Sprintf("the planner now scans %s sequentially", rel)},
 				store.Suggestion{Text: "If no setting or schema change explains it, an index on the filtered columns lets the planner avoid the scan.",
@@ -158,6 +173,16 @@ func Regression(cfg config.Diagnosis, in Input) Result {
 		cands = append(cands, candidate{store.Cause{Code: "CACHE_MISSES", Confidence: 0.45,
 			Summary: "the query reads far more from disk than before"},
 			store.Suggestion{Text: "Look for a plan that reads less, or for memory pressure on the server."}})
+	}
+
+	if dbNow, dbThen := perSecond(in.DBRecent), perSecond(in.DBBase); !planChanged && dbThen > 0 && dbNow >= cfg.ContentionRatioMin*dbThen {
+		r.Evidence = append(r.Evidence, fmt.Sprintf("database time %.0f -> %.0f ms per second across all queries", dbThen, dbNow))
+		s := store.Suggestion{Text: "The plan did not change; the whole database got busier. Fix what is taking the time first."}
+		if in.TopConsumer != "" {
+			s.Text += " The query that gained the most: " + oneLine(in.TopConsumer)
+		}
+		cands = append(cands, candidate{store.Cause{Code: "RESOURCE_CONTENTION", Confidence: 0.55,
+			Summary: fmt.Sprintf("the database is %.1fx busier than before and this query waits its turn", dbNow/dbThen)}, s})
 	}
 
 	if len(cands) == 0 {
@@ -249,6 +274,13 @@ func humanKB(v string) string {
 		return fmt.Sprintf("%dMB", kb/1024)
 	}
 	return fmt.Sprintf("%dkB", kb)
+}
+
+func perSecond(w detect.Window) float64 {
+	if w.Seconds <= 0 {
+		return 0
+	}
+	return w.Ms / w.Seconds
 }
 
 func ratio(a, b float64) float64 {

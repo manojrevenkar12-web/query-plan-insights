@@ -1,0 +1,27 @@
+[
+  {
+    "Plan": {
+      "Node Type": "Limit", "Parallel Aware": false, "Async Capable": false, "Startup Cost": 27.66, "Total Cost": 27.68,
+      "Plan Rows": 6, "Plan Width": 22, "Output": ["id", "total", "status", "created_at"],
+      "Plans": [
+        {
+          "Node Type": "Sort", "Parent Relationship": "Outer", "Startup Cost": 27.66, "Total Cost": 27.68, "Plan Rows": 6,
+          "Plan Width": 22, "Output": ["id", "total", "status", "created_at"], "Sort Key": ["orders.created_at DESC"],
+          "Plans": [
+            {
+              "Node Type": "Bitmap Heap Scan", "Parent Relationship": "Outer", "Relation Name": "orders", "Schema": "shop",
+              "Alias": "orders", "Startup Cost": 4.47, "Total Cost": 27.58, "Plan Rows": 6, "Plan Width": 22,
+              "Recheck Cond": "(orders.customer_id = $1)",
+              "Plans": [
+                {
+                  "Node Type": "Bitmap Index Scan", "Parent Relationship": "Outer", "Index Name": "orders_customer_idx",
+                  "Startup Cost": 0.0, "Total Cost": 4.47, "Plan Rows": 6, "Index Cond": "(orders.customer_id = $1)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

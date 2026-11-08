@@ -30,6 +30,8 @@ type Detector struct {
 	WarmupSeconds             int     `json:"warmupSeconds"`
 	NewQueryShareOfCalls      float64 `json:"newQueryShareOfCalls"`
 	NewQueryMinCallsPerSecond float64 `json:"newQueryMinCallsPerSecond"`
+	SpillTempBlocksPerCall    float64 `json:"spillTempBlocksPerCall"`
+	SpillLatencyRatio         float64 `json:"spillLatencyRatio"`
 }
 
 type Diagnosis struct {
@@ -40,6 +42,7 @@ type Diagnosis struct {
 	RowsRatioMin            float64 `json:"rowsRatioMin"`
 	ModSinceAnalyzeShareMin float64 `json:"modSinceAnalyzeShareMin"`
 	EstimateErrorMin        float64 `json:"estimateErrorMin"`
+	ContentionRatioMin      float64 `json:"contentionRatioMin"`
 }
 
 type API struct {

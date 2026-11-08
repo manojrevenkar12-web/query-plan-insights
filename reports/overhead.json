@@ -1,0 +1,20 @@
+{
+  "rounds": 3,
+  "secondsPerPhase": 8,
+  "workers": 2,
+  "offQps": [
+    11086.625,
+    11863.5,
+    10431.5
+  ],
+  "onQps": [
+    11540.125,
+    11513.125,
+    9998.875
+  ],
+  "offMeanQps": 11127.208333333332,
+  "onMeanQps": 11017.375,
+  "overheadPct": 0.9870699823630407,
+  "ticks": 24,
+  "tickMeanMs": 10.882125
+}

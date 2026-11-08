@@ -22,11 +22,12 @@ type Window struct {
 	Interval int     `json:"intervals"`
 }
 
-// Sum aggregates the points with from <= At < to.
+// Sum aggregates the points with from < At <= to. A point stands for the interval that ends at At, so the window
+// (now-3s, now] holds exactly three one-second intervals.
 func Sum(points []store.Point, from, to time.Time) Window {
 	var w Window
 	for _, p := range points {
-		if p.At.Before(from) || !p.At.Before(to) {
+		if !p.At.After(from) || p.At.After(to) {
 			continue
 		}
 		w.Calls += p.Calls
@@ -72,7 +73,7 @@ func per(v float64, calls int64) float64 {
 func Windows(cfg config.Detector, points []store.Point, now time.Time) (base, recent Window) {
 	recentFrom := now.Add(-time.Duration(cfg.RecentSeconds) * time.Second)
 	baseFrom := recentFrom.Add(-time.Duration(cfg.BaselineSeconds) * time.Second)
-	return Sum(points, baseFrom, recentFrom), Sum(points, recentFrom, now.Add(time.Nanosecond))
+	return Sum(points, baseFrom, recentFrom), Sum(points, recentFrom, now)
 }
 
 // Slower is true when the recent window is slower than the baseline by both the ratio and the absolute margin, with
@@ -85,7 +86,98 @@ func Slower(cfg config.Detector, base, recent Window) bool {
 	return r >= cfg.LatencyRatio*b && r-b >= cfg.MinDeltaMillis
 }
 
+// Spilling is true when a query that did not write temporary files now does, and is slower for it. A spill costs
+// less on a fast disk than a lost index, so it needs a smaller slowdown to count; the temp blocks are the signal.
+func Spilling(cfg config.Detector, base, recent Window) bool {
+	if base.Calls < cfg.MinCalls || recent.Calls < cfg.MinCalls {
+		return false
+	}
+	tempNow := recent.PerCall(recent.Temp)
+	b, r := base.Mean(), recent.Mean()
+	return tempNow >= cfg.SpillTempBlocksPerCall && base.PerCall(base.Temp) <= tempNow/10 &&
+		r >= cfg.SpillLatencyRatio*b && r-b >= cfg.MinDeltaMillis
+}
+
+// Regressed is the detector: slower by the latency rule, or newly spilling. It names the signal that fired.
+func Regressed(cfg config.Detector, base, recent Window) (bool, string) {
+	if Slower(cfg, base, recent) {
+		return true, "latency"
+	}
+	if Spilling(cfg, base, recent) {
+		return true, "spill"
+	}
+	return false, ""
+}
+
 // Recovered is true when the recent mean is back within the tolerance of the frozen baseline.
 func Recovered(cfg config.Detector, baselineMs float64, recent Window) bool {
 	return recent.Calls >= cfg.MinCalls && recent.Mean() <= baselineMs*(1+cfg.ResolveTolerance)
+}
+
+// Tracker follows one query between ticks. Once a window looks bad, the baseline is frozen at the start of that window
+// and the evidence grows from there: the baseline is not contaminated by the regression it is judging, and a slow
+// query called twice a second is judged on all its slow calls, not on the last three seconds alone.
+type Tracker struct {
+	ticks int
+	onset time.Time
+}
+
+// Verdict is what one tick concluded.
+type Verdict struct {
+	Open   bool      // the regression persisted: open an insight
+	Signal string    // latency or spill
+	Onset  time.Time // start of the first bad window
+	Base   Window    // the frozen baseline
+	Recent Window    // everything since the onset
+}
+
+// Step judges the query at now. It returns Open once the regression has held for PersistTicks ticks, then starts over.
+func (t *Tracker) Step(cfg config.Detector, points []store.Point, now time.Time) Verdict {
+	var base, recent Window
+	if t.ticks == 0 {
+		base, recent = Windows(cfg, points, now)
+	} else {
+		base = Sum(points, t.onset.Add(-time.Duration(cfg.BaselineSeconds)*time.Second), t.onset)
+		recent = Sum(points, t.onset, now)
+	}
+	slow, signal := Regressed(cfg, base, recent)
+	if slow && !latestAgrees(cfg, signal, base, points, now) {
+		slow = false // one bad second is a spike, not a regression: every tick's newest interval must agree
+	}
+	if !slow {
+		t.ticks = 0
+		return Verdict{Base: base, Recent: recent}
+	}
+	if t.ticks == 0 {
+		t.onset = now.Add(-time.Duration(cfg.RecentSeconds) * time.Second)
+	}
+	t.ticks++
+	v := Verdict{Signal: signal, Onset: t.onset, Base: base, Recent: recent}
+	if t.ticks >= cfg.PersistTicks {
+		v.Open = true
+		t.ticks = 0
+	}
+	return v
+}
+
+// Suspected reports whether the last tick looked bad.
+func (t *Tracker) Suspected() bool { return t.ticks > 0 }
+
+// Reset forgets any suspicion.
+func (t *Tracker) Reset() { t.ticks = 0 }
+
+// latestAgrees checks the newest interval on its own. An interval without calls says nothing either way.
+func latestAgrees(cfg config.Detector, signal string, base Window, points []store.Point, now time.Time) bool {
+	if len(points) == 0 {
+		return false
+	}
+	p := points[len(points)-1]
+	if p.At.After(now) || p.Calls == 0 {
+		return true
+	}
+	if signal == "spill" {
+		return float64(p.TempBlksWritten)/float64(p.Calls) >= cfg.SpillTempBlocksPerCall
+	}
+	m, b := p.MeanMs(), base.Mean()
+	return m >= cfg.LatencyRatio*b && m-b >= cfg.MinDeltaMillis
 }

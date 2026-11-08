@@ -1,0 +1,6 @@
+level=info msg="database change" kind=INDEX_DROPPED relation="shop.orders" name="orders_customer_idx" before="CREATE INDEX orders_customer_idx ON shop.orders USING btree (customer_id)" after=""
+level=info msg="plan changed" query_id=1147128283207611321 fingerprint=f807e8c68b16
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=1147128283207611321 cause=MISSING_INDEX baseline_ms=0.075 current_ms=9.669 impact_ms_per_s=287.8
+level=info msg="database change" kind=INDEX_CREATED relation="shop.orders" name="orders_customer_idx" before="" after="CREATE INDEX orders_customer_idx ON shop.orders USING btree (customer_id)"
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=1147128283207611321 cause=MISSING_INDEX baseline_ms=0.075 current_ms=0.076 impact_ms_per_s=0.0
+level=info msg="plan changed" query_id=1147128283207611321 fingerprint=7db9a5975dbf

@@ -42,7 +42,7 @@ type PlanVersion struct {
 
 // Query is everything known about one normalised statement.
 type Query struct {
-	ID           int64         `json:"id"`
+	ID           int64         `json:"id,string"` // a 64-bit hash: a string so JavaScript keeps every digit
 	Text         string        `json:"text"`
 	FirstSeen    time.Time     `json:"firstSeen"`
 	Points       []Point       `json:"points"`
@@ -113,11 +113,35 @@ func (s *Store) AddPoint(id int64, text string, p Point) {
 	q.Points = q.Points[i:]
 }
 
-// AddDBPoint records whole-database totals for an interval.
+// AddDBPoint records whole-database totals for an interval, and forgets what is older than the retention: database
+// points, events, and queries that have not run since (unless an insight is still open on them).
 func (s *Store) AddDBPoint(p Point) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.dbMs = append(s.dbMs, p)
+	cut := p.At.Add(-s.retention)
+	i := 0
+	for i < len(s.dbMs) && s.dbMs[i].At.Before(cut) {
+		i++
+	}
+	s.dbMs = s.dbMs[i:]
+	j := 0
+	for j < len(s.events) && s.events[j].At.Before(cut) {
+		j++
+	}
+	s.events = s.events[j:]
+	open := map[int64]bool{}
+	for _, in := range s.insights {
+		if in.Status == "OPEN" {
+			open[in.QueryID] = true
+		}
+	}
+	for id, q := range s.queries {
+		if n := len(q.Points); !open[id] && (n == 0 || q.Points[n-1].At.Before(cut)) {
+			delete(s.queries, id)
+			delete(s.blockers, id)
+		}
+	}
 }
 
 // DBPoints returns whole-database totals since a time.

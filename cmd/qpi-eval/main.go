@@ -18,6 +18,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/manojrevenkar12-web/query-plan-insights/internal/config"
@@ -46,7 +47,7 @@ func main() {
 	fail(err)
 	spec, err := eval.LoadSpec(root)
 	fail(err)
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	e := eval.Env{Cfg: cfg, DSN: eval.DSNs{
 		Admin:       env("QPI_ADMIN_DSN", "postgres://qpi:qpi@localhost:5432/qpi?sslmode=disable"),
@@ -150,7 +151,8 @@ func runSet(ctx context.Context, e eval.Env, set string, scenarios []eval.Scenar
 			o.Detected, o.DetectSeconds, o.CauseAtOpen, o.CauseCorrect, o.SuggestionCorrect, o.Resolved, o.ResolveSeconds,
 			o.FalseAlarms, o.CollateralFound)
 		if err := writeJSON(filepath.Join(reports, "snapshots", set+"-"+sc.Name+".json"), map[string]any{
-			"set": set, "scenario": sc, "timeline": rec.Timeline, "outcome": o, "names": rec.Names, "snapshot": rec.Snapshot,
+			"set": set, "scenario": sc, "timeline": rec.Timeline, "outcome": o, "names": rec.Names, "holderPid": rec.HolderPID,
+			"snapshot": rec.Snapshot,
 		}); err != nil {
 			return err
 		}

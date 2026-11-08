@@ -1,0 +1,128 @@
+{
+  "dev": [
+    {
+      "name": "drop_index",
+      "about": "A migration drops the index the order history page relies on.",
+      "app": "shop",
+      "target": "customer_orders",
+      "kind": "LATENCY_REGRESSION",
+      "cause": "MISSING_INDEX",
+      "suggestion": "CREATE INDEX CONCURRENTLY orders_customer_idx",
+      "fault": { "sql": ["DROP INDEX shop.orders_customer_idx"] },
+      "fix": { "sql": ["CREATE INDEX orders_customer_idx ON shop.orders (customer_id)"] }
+    },
+    {
+      "name": "planner_setting",
+      "about": "Someone sets random_page_cost far too high on the server, and index scans lose to sequential scans.",
+      "app": "shop",
+      "target": "customer_orders",
+      "alsoAffected": ["order_items", "product", "basket_products", "top_customers"],
+      "kind": "LATENCY_REGRESSION",
+      "cause": "SETTING_CHANGE",
+      "suggestion": "RESET random_page_cost",
+      "fault": { "sql": ["ALTER SYSTEM SET random_page_cost = 4000", "SELECT pg_reload_conf()"] },
+      "fix": { "sql": ["ALTER SYSTEM RESET random_page_cost", "SELECT pg_reload_conf()"] }
+    },
+    {
+      "name": "lock_contention",
+      "about": "A batch job holds row locks on the hottest products in long transactions.",
+      "app": "shop",
+      "target": "reserve_stock",
+      "kind": "LATENCY_REGRESSION",
+      "cause": "LOCK_CONTENTION",
+      "suggestion": "$HOLDER_PID",
+      "fault": { "lockHolder": { "sql": "UPDATE shop.products SET stock = stock WHERE id <= 40", "holdMillis": 800, "pauseMillis": 200 } },
+      "fix": { "stopLockHolder": true }
+    },
+    {
+      "name": "work_mem_spill",
+      "about": "work_mem is cut on the server and the daily report's aggregate spills to disk.",
+      "app": "shop",
+      "target": "top_customers",
+      "kind": "LATENCY_REGRESSION",
+      "cause": "SPILL_TO_DISK",
+      "suggestion": "work_mem = '64MB'",
+      "fault": { "sql": ["ALTER SYSTEM SET work_mem = '64kB'", "SELECT pg_reload_conf()"] },
+      "fix": { "sql": ["ALTER SYSTEM SET work_mem = '64MB'", "SELECT pg_reload_conf()"] }
+    },
+    {
+      "name": "n_plus_one",
+      "about": "A release replaces the batched basket lookup with one query per product.",
+      "app": "shop",
+      "target": "basket_product_each",
+      "kind": "NEW_HEAVY_QUERY",
+      "cause": "N_PLUS_ONE",
+      "suggestion": "ANY($1)",
+      "fault": { "nPlusOne": true },
+      "fix": { "nPlusOne": false }
+    },
+    {
+      "name": "control",
+      "about": "Nothing changes. Any insight is a false alarm.",
+      "app": "shop"
+    }
+  ],
+  "heldout": [
+    {
+      "name": "drop_composite_index",
+      "about": "A cleanup drops the composite index behind the latest-invoices widget.",
+      "app": "billing",
+      "target": "latest_invoices",
+      "kind": "LATENCY_REGRESSION",
+      "cause": "MISSING_INDEX",
+      "suggestion": "CREATE INDEX CONCURRENTLY invoices_account_issued_idx",
+      "fault": { "sql": ["DROP INDEX billing.invoices_account_issued_idx"] },
+      "fix": { "sql": ["CREATE INDEX invoices_account_issued_idx ON billing.invoices (account_id, issued_at DESC)"] }
+    },
+    {
+      "name": "index_scans_disabled",
+      "about": "A debugging session leaves enable_indexscan and enable_bitmapscan off on the server.",
+      "app": "billing",
+      "target": "latest_invoices",
+      "alsoAffected": ["invoice_payments", "account", "accounts_batch", "charge_account", "usage_rollup"],
+      "kind": "LATENCY_REGRESSION",
+      "cause": "SETTING_CHANGE",
+      "suggestion": "RESET enable_",
+      "fault": { "sql": ["ALTER SYSTEM SET enable_indexscan = off", "ALTER SYSTEM SET enable_bitmapscan = off", "SELECT pg_reload_conf()"] },
+      "fix": { "sql": ["ALTER SYSTEM RESET enable_indexscan", "ALTER SYSTEM RESET enable_bitmapscan", "SELECT pg_reload_conf()"] }
+    },
+    {
+      "name": "row_lock_holder",
+      "about": "A reconciliation job locks the busiest accounts with SELECT ... FOR UPDATE and holds the transaction open.",
+      "app": "billing",
+      "target": "charge_account",
+      "kind": "LATENCY_REGRESSION",
+      "cause": "LOCK_CONTENTION",
+      "suggestion": "$HOLDER_PID",
+      "fault": { "lockHolder": { "sql": "SELECT id FROM billing.accounts WHERE id <= 25 ORDER BY id FOR UPDATE", "holdMillis": 900, "pauseMillis": 300 } },
+      "fix": { "stopLockHolder": true }
+    },
+    {
+      "name": "role_work_mem",
+      "about": "work_mem is lowered for the application role only, so only new application sessions spill.",
+      "app": "billing",
+      "target": "usage_rollup",
+      "kind": "LATENCY_REGRESSION",
+      "cause": "SPILL_TO_DISK",
+      "suggestion": "work_mem = '64MB'",
+      "fault": { "sql": ["ALTER ROLE qpi_app SET work_mem = '64kB'"] },
+      "fix": { "sql": ["ALTER ROLE qpi_app RESET work_mem"] }
+    },
+    {
+      "name": "n_plus_one_accounts",
+      "about": "A release fetches account plans one by one instead of in one batch.",
+      "app": "billing",
+      "target": "account_each",
+      "kind": "NEW_HEAVY_QUERY",
+      "cause": "N_PLUS_ONE",
+      "suggestion": "ANY($1)",
+      "fault": { "nPlusOne": true },
+      "fix": { "nPlusOne": false }
+    },
+    {
+      "name": "control",
+      "about": "Nothing changes. Any insight is a false alarm.",
+      "app": "billing"
+    }
+  ]
+}

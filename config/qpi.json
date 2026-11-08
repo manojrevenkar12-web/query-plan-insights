@@ -1,0 +1,44 @@
+{
+  "collector": {
+    "intervalMillis": 1000,
+    "activitySamplesPerInterval": 4,
+    "explainEverySeconds": 10,
+    "explainTopN": 25,
+    "explainTimeoutMillis": 2000,
+    "retentionSeconds": 1800,
+    "minCallsToTrack": 1
+  },
+  "detector": {
+    "baselineSeconds": 12,
+    "recentSeconds": 3,
+    "minCalls": 5,
+    "latencyRatio": 2.5,
+    "minDeltaMillis": 1.0,
+    "persistTicks": 3,
+    "resolveTolerance": 0.5,
+    "warmupSeconds": 8,
+    "newQueryShareOfCalls": 0.25,
+    "newQueryMinCallsPerSecond": 50
+  },
+  "diagnosis": {
+    "eventLookbackSeconds": 60,
+    "lockShareMin": 0.3,
+    "tempBlocksPerCallMin": 1.0,
+    "readRatioMin": 3.0,
+    "rowsRatioMin": 2.0,
+    "modSinceAnalyzeShareMin": 0.2,
+    "estimateErrorMin": 10.0
+  },
+  "api": { "listen": ":8080", "overviewRows": 20, "windowSeconds": 300 },
+  "eval": {
+    "baselineSeconds": 20,
+    "faultSeconds": 25,
+    "fixSeconds": 20,
+    "connMaxLifetimeMillis": 2000,
+    "serverSettings": { "work_mem": "64MB" },
+    "overheadSeconds": 8,
+    "overheadRounds": 3,
+    "overheadWorkers": 2,
+    "seed": 20261108
+  }
+}

@@ -1,0 +1,7 @@
+/bin/
+/qpi
+/qpi-eval
+web/node_modules/
+web/dist/
+*.test
+coverage.out

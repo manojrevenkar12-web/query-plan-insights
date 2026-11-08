@@ -1,0 +1,2 @@
+level=warn msg="new heavy query" insight=1 kind=NEW_HEAVY_QUERY query_id=-1929275034287390843 cause=N_PLUS_ONE baseline_ms=0.000 current_ms=0.019 impact_ms_per_s=1.6
+level=warn msg="query recovered" insight=1 kind=NEW_HEAVY_QUERY query_id=-1929275034287390843 cause=N_PLUS_ONE baseline_ms=0.000 current_ms=0.015 impact_ms_per_s=0.0

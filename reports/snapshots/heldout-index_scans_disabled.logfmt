@@ -1,0 +1,24 @@
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="enable_bitmapscan" before="on" after="off"
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="enable_indexscan" before="on" after="off"
+level=info msg="plan changed" query_id=-6386116164312990841 fingerprint=e150b2db38bb
+level=info msg="plan changed" query_id=3295830608204824636 fingerprint=fc4c7f8280cf
+level=info msg="plan changed" query_id=-8255033477297607235 fingerprint=8142d0a664ba
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=-8255033477297607235 cause=SETTING_CHANGE baseline_ms=0.198 current_ms=3.634 impact_ms_per_s=17.2
+level=warn msg="query regression" insight=2 kind=LATENCY_REGRESSION query_id=-6386116164312990841 cause=SETTING_CHANGE baseline_ms=0.067 current_ms=78.135 impact_ms_per_s=2123.6
+level=warn msg="query regression" insight=3 kind=LATENCY_REGRESSION query_id=542361888495333470 cause=RESOURCE_CONTENTION baseline_ms=109.919 current_ms=508.156 impact_ms_per_s=637.2
+level=warn msg="query regression" insight=4 kind=LATENCY_REGRESSION query_id=3295830608204824636 cause=SETTING_CHANGE baseline_ms=0.043 current_ms=49.278 impact_ms_per_s=1634.7
+level=info msg="plan changed" query_id=-6007842402065575152 fingerprint=8142d0a664ba
+level=warn msg="query regression" insight=5 kind=LATENCY_REGRESSION query_id=1445810664847143873 cause=RESOURCE_CONTENTION baseline_ms=0.062 current_ms=1.815 impact_ms_per_s=26.7
+level=warn msg="query regression" insight=6 kind=LATENCY_REGRESSION query_id=-6007842402065575152 cause=SETTING_CHANGE baseline_ms=0.023 current_ms=1.238 impact_ms_per_s=87.7
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="enable_bitmapscan" before="off" after="on"
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="enable_indexscan" before="off" after="on"
+level=info msg="plan changed" query_id=-6007842402065575152 fingerprint=cc7ff3fd771e
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=-8255033477297607235 cause=SETTING_CHANGE baseline_ms=0.198 current_ms=0.168 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=5 kind=LATENCY_REGRESSION query_id=1445810664847143873 cause=RESOURCE_CONTENTION baseline_ms=0.062 current_ms=0.063 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=2 kind=LATENCY_REGRESSION query_id=-6386116164312990841 cause=SETTING_CHANGE baseline_ms=0.067 current_ms=0.068 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=6 kind=LATENCY_REGRESSION query_id=-6007842402065575152 cause=SETTING_CHANGE baseline_ms=0.023 current_ms=0.023 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=3 kind=LATENCY_REGRESSION query_id=542361888495333470 cause=RESOURCE_CONTENTION baseline_ms=109.919 current_ms=108.437 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=4 kind=LATENCY_REGRESSION query_id=3295830608204824636 cause=SETTING_CHANGE baseline_ms=0.043 current_ms=0.042 impact_ms_per_s=0.0
+level=info msg="plan changed" query_id=-6386116164312990841 fingerprint=e30cf1f2fc05
+level=info msg="plan changed" query_id=3295830608204824636 fingerprint=de24a0364396
+level=info msg="plan changed" query_id=-8255033477297607235 fingerprint=cc7ff3fd771e

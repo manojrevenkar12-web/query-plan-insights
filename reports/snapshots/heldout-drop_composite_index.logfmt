@@ -1,0 +1,8 @@
+level=info msg="database change" kind=INDEX_DROPPED relation="billing.invoices" name="invoices_account_issued_idx" before="CREATE INDEX invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC)" after=""
+level=info msg="plan changed" query_id=7398522308264073453 fingerprint=e150b2db38bb
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=7398522308264073453 cause=MISSING_INDEX baseline_ms=0.078 current_ms=49.714 impact_ms_per_s=1439.2
+level=warn msg="query regression" insight=2 kind=LATENCY_REGRESSION query_id=8238662541593331 cause=RESOURCE_CONTENTION baseline_ms=139.766 current_ms=414.749 impact_ms_per_s=550.0
+level=info msg="database change" kind=INDEX_CREATED relation="billing.invoices" name="invoices_account_issued_idx" before="" after="CREATE INDEX invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC)"
+level=warn msg="query recovered" insight=2 kind=LATENCY_REGRESSION query_id=8238662541593331 cause=RESOURCE_CONTENTION baseline_ms=139.766 current_ms=119.430 impact_ms_per_s=0.0
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=7398522308264073453 cause=MISSING_INDEX baseline_ms=0.078 current_ms=0.070 impact_ms_per_s=0.0
+level=info msg="plan changed" query_id=7398522308264073453 fingerprint=e30cf1f2fc05

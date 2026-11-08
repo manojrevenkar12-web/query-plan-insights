@@ -1,0 +1,4 @@
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="work_mem" before="65536" after="64kB"
+level=warn msg="query regression" insight=1 kind=LATENCY_REGRESSION query_id=-3066732977660100287 cause=SPILL_TO_DISK baseline_ms=104.026 current_ms=135.474 impact_ms_per_s=75.5
+level=info msg="database change" kind=SETTING_CHANGED relation="" name="work_mem" before="64kB" after="65536"
+level=warn msg="query recovered" insight=1 kind=LATENCY_REGRESSION query_id=-3066732977660100287 cause=SPILL_TO_DISK baseline_ms=104.026 current_ms=100.324 impact_ms_per_s=0.0

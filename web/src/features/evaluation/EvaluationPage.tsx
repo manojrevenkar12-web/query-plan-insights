@@ -89,7 +89,7 @@ function ScenarioTable({ outcomes, onOpen }: { outcomes: Outcome[]; onOpen: (o: 
                 </button>
                 <div className="panel__note">{o.about}</div>
               </td>
-              <td className="cell-sql">{o.target ?? "none (control)"}</td>
+              <td className="cell-sql" style={{ whiteSpace: "nowrap" }}>{o.target ?? "none (control)"}</td>
               <td className="num">{o.control ? "–" : o.detected ? `after ${seconds(o.detectSeconds)}` : mark(false, "", "missed")}</td>
               <td>
                 {o.control ? "–" : o.causeAtOpen ? (

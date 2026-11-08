@@ -1,0 +1,4923 @@
+{
+  "holderPid": 0,
+  "names": {
+    "-6814156851655559406": "invoice_payments",
+    "1874575902785297866": "account",
+    "454656202364398734": "accounts_batch",
+    "5187105456957260150": "charge_account",
+    "7398522308264073453": "latest_invoices",
+    "8238662541593331": "usage_rollup"
+  },
+  "outcome": {
+    "set": "heldout",
+    "scenario": "drop_composite_index",
+    "about": "A cleanup drops the composite index behind the latest-invoices widget.",
+    "app": "billing",
+    "control": false,
+    "target": "latest_invoices",
+    "wantKind": "LATENCY_REGRESSION",
+    "wantCause": "MISSING_INDEX",
+    "wantInSuggestion": "CREATE INDEX CONCURRENTLY invoices_account_issued_idx",
+    "detected": true,
+    "detectSeconds": 3.000672536,
+    "causeAtOpen": "MISSING_INDEX",
+    "causeCorrect": true,
+    "finalCause": "MISSING_INDEX",
+    "finalCauseCorrect": true,
+    "suggestion": "Recreate the index without blocking writes. CREATE INDEX CONCURRENTLY invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC);",
+    "suggestionCorrect": true,
+    "baselineMs": 0.07835321025641027,
+    "worstMs": 91.00294606086922,
+    "resolved": true,
+    "resolveSeconds": 6.992401332,
+    "verification": "back to 0.07 ms from a worst of 91.00 ms (baseline 0.08 ms); after index invoices_account_issued_idx was created",
+    "collateralFound": [
+      "usage_rollup (contention)"
+    ],
+    "falseAlarms": [],
+    "insights": 2,
+    "workload": {
+      "issued": 10073,
+      "errors": 0,
+      "dropped": 0
+    }
+  },
+  "scenario": {
+    "name": "drop_composite_index",
+    "about": "A cleanup drops the composite index behind the latest-invoices widget.",
+    "app": "billing",
+    "target": "latest_invoices",
+    "kind": "LATENCY_REGRESSION",
+    "cause": "MISSING_INDEX",
+    "suggestion": "CREATE INDEX CONCURRENTLY invoices_account_issued_idx",
+    "fault": {
+      "sql": [
+        "DROP INDEX billing.invoices_account_issued_idx"
+      ]
+    },
+    "fix": {
+      "sql": [
+        "CREATE INDEX invoices_account_issued_idx ON billing.invoices (account_id, issued_at DESC)"
+      ]
+    }
+  },
+  "set": "heldout",
+  "snapshot": {
+    "overview": {
+      "startedAt": "2026-11-08T13:15:27.957262358+01:00",
+      "now": "2026-11-08T13:16:34.270932185+01:00",
+      "database": [
+        {
+          "at": "2026-11-08T13:15:28.957717485+01:00",
+          "calls": 0,
+          "meanMs": 0,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:29.95845745+01:00",
+          "calls": 150,
+          "meanMs": 1.3450257066666667,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:30.95821304+01:00",
+          "calls": 150,
+          "meanMs": 1.5111574133333336,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:31.958471733+01:00",
+          "calls": 155,
+          "meanMs": 1.7549612000000003,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:32.958169069+01:00",
+          "calls": 149,
+          "meanMs": 1.736165979865772,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:33.95803757+01:00",
+          "calls": 152,
+          "meanMs": 1.500992256578947,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:34.958484494+01:00",
+          "calls": 156,
+          "meanMs": 2.134526262820512,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:35.958181612+01:00",
+          "calls": 150,
+          "meanMs": 1.5089071200000002,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:36.958174846+01:00",
+          "calls": 150,
+          "meanMs": 2.7486731133333335,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:37.958509449+01:00",
+          "calls": 152,
+          "meanMs": 1.5220092631578948,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:38.957785069+01:00",
+          "calls": 153,
+          "meanMs": 1.8158435947712421,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:39.957511384+01:00",
+          "calls": 151,
+          "meanMs": 2.033537609271522,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:40.958484446+01:00",
+          "calls": 155,
+          "meanMs": 1.8201685999999988,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:41.958063483+01:00",
+          "calls": 152,
+          "meanMs": 2.4391256184210515,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:42.958750909+01:00",
+          "calls": 151,
+          "meanMs": 1.5003390331125814,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:43.957972232+01:00",
+          "calls": 150,
+          "meanMs": 1.9103884800000015,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:44.957410007+01:00",
+          "calls": 152,
+          "meanMs": 1.8224528486842086,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:45.957356399+01:00",
+          "calls": 152,
+          "meanMs": 1.6140436710526302,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:46.958458862+01:00",
+          "calls": 152,
+          "meanMs": 1.1922793289473663,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:47.957766123+01:00",
+          "calls": 155,
+          "meanMs": 2.218056135483874,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:48.957540448+01:00",
+          "calls": 149,
+          "meanMs": 10.158203154362418,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:49.957948684+01:00",
+          "calls": 150,
+          "meanMs": 18.62895442,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:50.958420239+01:00",
+          "calls": 150,
+          "meanMs": 34.94303980000001,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:51.95878909+01:00",
+          "calls": 158,
+          "meanMs": 18.800487335443034,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:52.958538865+01:00",
+          "calls": 153,
+          "meanMs": 14.437203542483699,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:53.959056748+01:00",
+          "calls": 148,
+          "meanMs": 8.148538277027031,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:54.95796419+01:00",
+          "calls": 152,
+          "meanMs": 15.145784519736857,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:55.958350784+01:00",
+          "calls": 153,
+          "meanMs": 9.158005196078427,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:56.958124336+01:00",
+          "calls": 151,
+          "meanMs": 7.272210953642378,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:57.957471566+01:00",
+          "calls": 153,
+          "meanMs": 12.208822209150336,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:58.958410055+01:00",
+          "calls": 151,
+          "meanMs": 11.12374679470206,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:15:59.957727524+01:00",
+          "calls": 154,
+          "meanMs": 18.179856857142802,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:00.957700247+01:00",
+          "calls": 150,
+          "meanMs": 15.497003393333314,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:01.958929586+01:00",
+          "calls": 155,
+          "meanMs": 23.182709412903183,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:02.95817508+01:00",
+          "calls": 151,
+          "meanMs": 16.87068894039735,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:03.958286289+01:00",
+          "calls": 149,
+          "meanMs": 16.644569751677835,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:04.957498637+01:00",
+          "calls": 157,
+          "meanMs": 15.186298089171906,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:05.957869351+01:00",
+          "calls": 152,
+          "meanMs": 16.36215984868419,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:06.958186566+01:00",
+          "calls": 150,
+          "meanMs": 12.907907353333314,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:07.958095087+01:00",
+          "calls": 150,
+          "meanMs": 12.99252157999993,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:08.957571508+01:00",
+          "calls": 155,
+          "meanMs": 18.91588952903229,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:09.958272386+01:00",
+          "calls": 149,
+          "meanMs": 10.58707770469803,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:10.959067327+01:00",
+          "calls": 152,
+          "meanMs": 15.453841552631593,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:11.958882195+01:00",
+          "calls": 153,
+          "meanMs": 18.91332817647053,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:12.958165084+01:00",
+          "calls": 154,
+          "meanMs": 24.75394891558433,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:13.95785824+01:00",
+          "calls": 144,
+          "meanMs": 29.459659930555397,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:14.957722452+01:00",
+          "calls": 158,
+          "meanMs": 24.880750278481056,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:15.958200189+01:00",
+          "calls": 151,
+          "meanMs": 1.844893655629183,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:16.958216134+01:00",
+          "calls": 152,
+          "meanMs": 1.6458708289473964,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:17.958169784+01:00",
+          "calls": 152,
+          "meanMs": 1.533179072368367,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:18.95837749+01:00",
+          "calls": 154,
+          "meanMs": 1.7778532207791942,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:19.958248937+01:00",
+          "calls": 154,
+          "meanMs": 1.4986032272726095,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:20.958156421+01:00",
+          "calls": 151,
+          "meanMs": 1.5809867682120617,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:21.958413246+01:00",
+          "calls": 151,
+          "meanMs": 1.6262356092714438,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:22.95832789+01:00",
+          "calls": 150,
+          "meanMs": 2.1599479933334194,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:23.957753379+01:00",
+          "calls": 153,
+          "meanMs": 1.6291455163398725,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:24.958036893+01:00",
+          "calls": 151,
+          "meanMs": 1.4528588476819582,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:25.957803864+01:00",
+          "calls": 150,
+          "meanMs": 1.4536243999999612,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:26.959018547+01:00",
+          "calls": 157,
+          "meanMs": 1.363663592356669,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:27.958341492+01:00",
+          "calls": 147,
+          "meanMs": 1.520289272108708,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:28.958122981+01:00",
+          "calls": 152,
+          "meanMs": 1.4343322105263099,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:29.95830189+01:00",
+          "calls": 152,
+          "meanMs": 1.5829416842105963,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:30.957754742+01:00",
+          "calls": 152,
+          "meanMs": 1.1762356118421606,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:31.957759695+01:00",
+          "calls": 154,
+          "meanMs": 1.4630591363636436,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:32.958387565+01:00",
+          "calls": 151,
+          "meanMs": 1.861587046357822,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        },
+        {
+          "at": "2026-11-08T13:16:33.957478489+01:00",
+          "calls": 154,
+          "meanMs": 1.6952712142857662,
+          "rowsPerCall": 0,
+          "readPerCall": 0,
+          "tempPerCall": 0,
+          "lockShare": 0
+        }
+      ],
+      "openInsights": 0,
+      "resolvedInsights": 2,
+      "impactMsPerSec": 0,
+      "queries": [
+        {
+          "id": "7398522308264073453",
+          "text": "SELECT id, amount, state FROM billing.invoices WHERE account_id = $1 ORDER BY issued_at DESC LIMIT $2",
+          "callsPerSec": 30,
+          "meanMs": 0.05788016666709963,
+          "loadMsPerSec": 719.925605134328,
+          "plan": "0:Limit||||;1:Index Scan|invoices|invoices_account_issued_idx||;",
+          "spark": [
+            0.08530041379310345,
+            0.06023066666666666,
+            0.0638374193548387,
+            0.056668655172413714,
+            0.06153199999999988,
+            0.12830780645161294,
+            0.062214133333333164,
+            0.05754534482758616,
+            0.06436696666666641,
+            0.06263376666666645,
+            0.05597999999999992,
+            0.06563035483870981,
+            0.062010448275862336,
+            0.17039763333333321,
+            0.09712226666666694,
+            0.06379600000000044,
+            0.06457560000000011,
+            0.0707132999999999,
+            0.051192300000000066,
+            35.793789999999994,
+            88.38557682142857,
+            135.41835866666668,
+            49.59307305714288,
+            53.95458486666685,
+            27.952551933333357,
+            56.0669623000001,
+            31.10227626666668,
+            26.076743133333306,
+            42.02895290000003,
+            39.073698533333726,
+            67.43109658620659,
+            67.47114489655159,
+            71.80148354838691,
+            58.47152883333329,
+            60.57000276666658,
+            53.820043677419065,
+            56.89427853333327,
+            43.86500376666651,
+            58.408408448275466,
+            55.06737877419378,
+            38.33533027586236,
+            57.140657903225915,
+            73.73737410714264,
+            100.3944500645157,
+            140.68415899999906,
+            43.01404111111131,
+            0.05567420000030931,
+            0.07078190000005027,
+            0.07600216666639123,
+            0.0698293999999199,
+            0.06315696774136965,
+            0.09596006666736988,
+            0.06281593103405361,
+            0.0635271666670936,
+            0.07505587096778571,
+            0.060276344826732005,
+            0.05899046666648549,
+            0.059370999999960226,
+            0.08923227586136159,
+            0.06712226666665326,
+            0.05116686666709332,
+            0.06132946666693897,
+            0.054795766666696485,
+            0.06618970000102611,
+            0.05265503333357628
+          ],
+          "status": "OK"
+        },
+        {
+          "id": "8238662541593331",
+          "text": "SELECT account_id, metric, sum(quantity) AS q FROM billing.usage WHERE day \u003e= current_date - $1::int\n\t\t\t\tGROUP BY account_id, metric ORDER BY q DESC LIMIT $2",
+          "callsPerSec": 2,
+          "meanMs": 124.73104250000021,
+          "loadMsPerSec": 443.94262738805946,
+          "plan": "0:Limit||||;1:Sort||||;2:Aggregate||||Hashed;3:Seq Scan|usage|||;",
+          "spark": [
+            97.3758195,
+            109.88966750000003,
+            132.32471550000002,
+            126.210237,
+            110.77225549999997,
+            161.10775449999994,
+            109.57859050000002,
+            202.65668349999999,
+            112.45667800000001,
+            135.46288600000003,
+            150.23057799999992,
+            137.4094889999999,
+            181.7596484999999,
+            108.25147399999992,
+            138.68499900000006,
+            135.16990799999985,
+            119.14528449999989,
+            87.09833949999984,
+            168.86151150000023,
+            217.74649200000022,
+            315.52600299999995,
+            790.2481404999999,
+            410.072695333333,
+            292.87837800000034,
+            181.18635799999993,
+            307.6190024999996,
+            231.54873249999946,
+            155.73073449999993,
+            300.49870050000027,
+            249.1602009999997,
+            414.6959665000004,
+            363.71769400000085,
+            454.19961333333293,
+            394.6230245000006,
+            329.32982600000014,
+            355.67211999999927,
+            387.7520134999995,
+            308.1623455000008,
+            243.9467020000011,
+            406.775928666666,
+            230.84689049999906,
+            286.49464649999936,
+            412.15202749999844,
+            694.8452010000001,
+            720.6636990000006,
+            594.64195475,
+            136.39160449999872,
+            121.60506450000139,
+            113.136305,
+            133.28882899999917,
+            111.86369949999971,
+            114.53431300000011,
+            119.69004750000022,
+            157.05977600000006,
+            120.75743499999953,
+            106.21639200000027,
+            105.9996984999998,
+            103.88822599999912,
+            108.2674850000003,
+            105.68138999999974,
+            117.29377149999891,
+            86.21281850000014,
+            109.6691565000001,
+            137.05680500000017,
+            127.46716600000036
+          ],
+          "status": "OK"
+        },
+        {
+          "id": "-6814156851655559406",
+          "text": "SELECT paid_at, amount FROM billing.payments WHERE invoice_id = $1",
+          "callsPerSec": 40.333333333333336,
+          "meanMs": 0.03857934710743807,
+          "loadMsPerSec": 1.7203791492537313,
+          "plan": "0:Index Scan|payments|payments_invoice_idx||;",
+          "spark": [
+            0.044237549999999994,
+            0.053465923076923105,
+            0.04714840000000002,
+            0.047382950000000056,
+            0.044400025000000065,
+            0.04550400000000006,
+            0.06398851282051264,
+            0.04379187500000024,
+            0.04162542500000006,
+            0.04382384999999998,
+            0.04003335000000004,
+            0.041401624999999956,
+            0.04447273170731721,
+            0.05391607692307687,
+            0.04159182500000007,
+            0.047492675000000074,
+            0.041482125000000106,
+            0.042500824999999944,
+            0.04206063414634161,
+            0.03748987179487182,
+            0.033296170731706876,
+            0.03415349999999986,
+            0.033817399999999866,
+            0.035507050000000005,
+            0.06032538461538523,
+            0.04052057500000004,
+            0.049960499999999894,
+            0.032682775000000316,
+            0.06835609999999956,
+            0.03562027500000031,
+            0.17744343902439066,
+            0.03089712500000008,
+            0.03918867499999941,
+            0.037267574999998845,
+            0.04054133333333345,
+            0.03542790243902516,
+            0.038053774999999845,
+            0.0354706249999996,
+            0.03439976923076944,
+            0.036852365853657885,
+            0.035925725000000595,
+            0.03663315384615373,
+            0.04035270731707277,
+            0.0381598000000011,
+            0.03710907500000005,
+            0.033090282051282734,
+            0.033856125000000147,
+            0.04105642500000002,
+            0.03702114999999999,
+            0.042611902439024164,
+            0.043847564102564754,
+            0.05038710000000002,
+            0.03332604878048836,
+            0.1118260000000001,
+            0.04959342500000048,
+            0.034242899999998855,
+            0.037785692307692256,
+            0.038682951219512096,
+            0.03917405128205022,
+            0.04044470000000011,
+            0.036574174999999445,
+            0.03755034999999936,
+            0.03779590243902515,
+            0.04033037499999992,
+            0.03763134999999949
+          ],
+          "status": "OK"
+        },
+        {
+          "id": "1874575902785297866",
+          "text": "SELECT plan, balance FROM billing.accounts WHERE id = $1",
+          "callsPerSec": 60.333333333333336,
+          "meanMs": 0.02274495580110515,
+          "loadMsPerSec": 1.532886567164177,
+          "plan": "0:Index Scan|accounts|accounts_pkey||;",
+          "spark": [
+            0.02116841666666665,
+            0.0228435333333333,
+            0.02628126229508196,
+            0.02382701694915256,
+            0.022460966666666683,
+            0.022310967213114825,
+            0.020633559322033874,
+            0.02470934999999995,
+            0.021560866666666633,
+            0.02209611666666665,
+            0.027648116666666667,
+            0.029433433333333467,
+            0.02909641666666663,
+            0.020991416666666752,
+            0.05380048333333332,
+            0.021652583333333197,
+            0.02404253333333326,
+            0.022155616666666707,
+            0.021282262295081945,
+            0.021669508474576427,
+            0.02015484999999983,
+            0.025398049999999964,
+            0.02902604999999987,
+            0.02300713333333372,
+            0.021155610169491808,
+            0.023649783333333355,
+            0.02148740000000006,
+            0.02136475000000016,
+            0.02499259999999962,
+            0.021494849999999725,
+            0.021721475409836048,
+            0.021567516666666363,
+            0.026332633333333532,
+            0.020973516666666706,
+            0.02144928813559293,
+            0.021561803278688146,
+            0.02328196666666642,
+            0.020976186440677946,
+            0.13500277049180326,
+            0.022848533333332928,
+            0.024066016949151767,
+            0.025833633333333238,
+            0.023369229508196927,
+            0.024030852459016518,
+            0.023966879310344583,
+            0.023273114754098715,
+            0.023094525423727637,
+            0.029983749999999768,
+            0.023842233333334188,
+            0.02948626229508139,
+            0.024629666666666595,
+            0.05570733333333351,
+            0.024712633333332925,
+            0.02989279661016936,
+            0.025618866666667135,
+            0.020787249999999584,
+            0.02241898305084728,
+            0.02108096721311474,
+            0.02616757627118713,
+            0.024959283333333578,
+            0.023787933333333674,
+            0.024186466666666226,
+            0.02251495081967193,
+            0.024044203389831095,
+            0.021718311475410004
+          ],
+          "status": "OK"
+        },
+        {
+          "id": "5187105456957260150",
+          "text": "UPDATE billing.accounts SET balance = balance + $2 WHERE id = $1",
+          "callsPerSec": 15,
+          "meanMs": 0.06118046666666651,
+          "loadMsPerSec": 0.987225059701493,
+          "spark": [
+            0.06184400000000001,
+            0.06881426666666667,
+            0.07416686666666668,
+            0.05616586666666675,
+            0.0612564666666667,
+            0.19375886666666656,
+            0.05565060000000012,
+            0.07585486666666696,
+            0.05396919999999999,
+            0.07859412499999985,
+            0.06487985714285698,
+            0.05514481250000003,
+            0.0804721333333332,
+            0.049571133333333135,
+            0.06440478571428569,
+            0.062095733333333195,
+            0.09041293333333347,
+            0.07916260000000032,
+            0.051840999999999804,
+            0.057790857142856665,
+            0.054445400000000886,
+            0.06060980000000029,
+            0.054132733333333745,
+            0.05668956249999946,
+            0.06596535714285753,
+            0.06566320000000042,
+            0.0604901333333333,
+            0.052108133333333244,
+            0.06057806666666655,
+            0.3771035333333325,
+            0.05156231250000021,
+            0.05848864285714279,
+            0.06317012500000052,
+            0.05403914285714251,
+            0.05764386666666657,
+            0.054698625000000334,
+            0.06681946666666742,
+            0.05102040000000064,
+            0.05525253333333258,
+            0.05690400000000092,
+            0.05444713333333435,
+            0.05777826666666594,
+            0.05686333333333285,
+            0.07192262500000046,
+            0.06063993333333333,
+            0.06136250000000081,
+            0.04996713333333247,
+            0.05649533333333352,
+            0.06654399999999991,
+            0.054677533333332445,
+            0.06291543749999962,
+            0.0519787333333331,
+            0.058273857142857315,
+            0.07058586666666618,
+            0.07261346666666715,
+            0.06152519999999934,
+            0.0627560000000012,
+            0.054035687499999874,
+            0.0543570714285713,
+            0.061445799999999905,
+            0.058745333333333365,
+            0.05674666666666752,
+            0.04752119999999991,
+            0.06834826666666724,
+            0.06767193333333239
+          ],
+          "status": "OK"
+        },
+        {
+          "id": "454656202364398734",
+          "text": "SELECT id, plan FROM billing.accounts WHERE id = ANY($1)",
+          "callsPerSec": 5.333333333333333,
+          "meanMs": 0.14681181249999975,
+          "loadMsPerSec": 0.7743922238805975,
+          "plan": "0:Index Scan|accounts|accounts_pkey||;",
+          "spark": [
+            0.12461639999999999,
+            0.14984000000000003,
+            0.13149983333333337,
+            0.12031649999999994,
+            0.14356919999999995,
+            0.11000500000000013,
+            0.15295439999999996,
+            0.2366815,
+            0.14656719999999995,
+            0.1366116,
+            0.15101679999999984,
+            0.16137099999999993,
+            0.13064900000000002,
+            0.16610759999999977,
+            0.12030925000000003,
+            0.1257678000000002,
+            0.1297539999999998,
+            0.13831419999999994,
+            0.13754979999999967,
+            0.14318160000000013,
+            0.12597880000000003,
+            0.14413916666666685,
+            0.11902120000000024,
+            0.15801939999999987,
+            0.1275012500000008,
+            0.17752300000000004,
+            0.13567100000000032,
+            0.2423182499999994,
+            0.1568898333333332,
+            0.19583824999999955,
+            1.0758068,
+            0.13680600000000057,
+            0.1433804000000009,
+            0.11529080000000036,
+            0.14246999999999943,
+            0.140035666666666,
+            0.15891060000000082,
+            0.12239325000000179,
+            0.13642839999999978,
+            0.14463899999999916,
+            0.0956469999999996,
+            0.15776859999999998,
+            0.14262449999999896,
+            0.17838879999999904,
+            0.12786299999999784,
+            0.12899725000000117,
+            0.13183559999999944,
+            0.1100135999999992,
+            0.11620080000000144,
+            0.1501886000000013,
+            0.15085833333333318,
+            0.1609922500000014,
+            0.13897200000000112,
+            0.15663100000000157,
+            0.16151820000000044,
+            0.33221180000000033,
+            0.10736940000000032,
+            0.12362000000000133,
+            0.1317857500000006,
+            0.12100319999999982,
+            0.1426327999999998,
+            0.14357800000000082,
+            0.13861179999999962,
+            0.1886591999999993,
+            0.11877233333333355
+          ],
+          "status": "OK"
+        }
+      ],
+      "trackedQueries": 6,
+      "events": [
+        {
+          "at": "2026-11-08T13:15:47.957766123+01:00",
+          "kind": "INDEX_DROPPED",
+          "relation": "billing.invoices",
+          "name": "invoices_account_issued_idx",
+          "before": "CREATE INDEX invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC)"
+        },
+        {
+          "at": "2026-11-08T13:16:14.957722452+01:00",
+          "kind": "INDEX_CREATED",
+          "relation": "billing.invoices",
+          "name": "invoices_account_issued_idx",
+          "after": "CREATE INDEX invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC)"
+        }
+      ],
+      "windowSeconds": 67
+    },
+    "insights": [
+      {
+        "id": 2,
+        "kind": "LATENCY_REGRESSION",
+        "signal": "latency",
+        "queryId": "8238662541593331",
+        "query": "SELECT account_id, metric, sum(quantity) AS q FROM billing.usage WHERE day \u003e= current_date - $1::int\n\t\t\t\tGROUP BY account_id, metric ORDER BY q DESC LIMIT $2",
+        "status": "RESOLVED",
+        "openedAt": "2026-11-08T13:15:52.958538865+01:00",
+        "suspectedAt": "2026-11-08T13:15:47.958420239+01:00",
+        "baselineMs": 139.76562329166663,
+        "currentMs": 119.42961116666629,
+        "callsPerSec": 2,
+        "impactMsPerSec": 0,
+        "cause": {
+          "code": "RESOURCE_CONTENTION",
+          "confidence": 0.55,
+          "summary": "the database is 8.3x busier than before and this query waits its turn"
+        },
+        "causeAtOpen": "RESOURCE_CONTENTION",
+        "evidence": [
+          "mean time 139.77 ms -\u003e 361.82 ms (2.6x) over 8 calls",
+          "database time 287 -\u003e 2380 ms per second across all queries"
+        ],
+        "planAfter": "Limit  (rows=3931 cost=14317.7)\n  Sort  (rows=39306 cost=14406.1)\n    Aggregate  (rows=39306 cost=11308.3)\n      Seq Scan on usage  (rows=133333 cost=9817.0)\n",
+        "suggestion": {
+          "text": "The plan did not change; the whole database got busier. Fix what is taking the time first. The query that gained the most: SELECT id, amount, state FROM billing.invoices WHERE account_id = $1 ORDER BY issued_at DESC LIMIT $2"
+        },
+        "resolvedAt": "2026-11-08T13:16:19.958248937+01:00",
+        "resolvedMs": 119.42961116666629,
+        "verification": "back to 119.43 ms from a worst of 577.30 ms (baseline 139.77 ms); after index invoices_account_issued_idx was created",
+        "worstMs": 577.2975967499997
+      },
+      {
+        "id": 1,
+        "kind": "LATENCY_REGRESSION",
+        "signal": "latency",
+        "queryId": "7398522308264073453",
+        "query": "SELECT id, amount, state FROM billing.invoices WHERE account_id = $1 ORDER BY issued_at DESC LIMIT $2",
+        "status": "RESOLVED",
+        "openedAt": "2026-11-08T13:15:50.958420239+01:00",
+        "suspectedAt": "2026-11-08T13:15:45.957540448+01:00",
+        "baselineMs": 0.07835321025641027,
+        "currentMs": 0.06959135164804169,
+        "callsPerSec": 30.333333333333332,
+        "impactMsPerSec": 0,
+        "cause": {
+          "code": "MISSING_INDEX",
+          "confidence": 0.95,
+          "summary": "index invoices_account_issued_idx, which the plan used, was dropped"
+        },
+        "causeAtOpen": "MISSING_INDEX",
+        "evidence": [
+          "mean time 0.08 ms -\u003e 16.17 ms (206.4x) over 96 calls",
+          "plan access billing.invoices: Index Scan using invoices_account_issued_idx -\u003e Seq Scan",
+          "plan aggregation :  -\u003e Sort",
+          "index invoices_account_issued_idx on billing.invoices dropped at 13:15:47"
+        ],
+        "planChanges": [
+          {
+            "kind": "access",
+            "relation": "billing.invoices",
+            "before": "Index Scan using invoices_account_issued_idx",
+            "after": "Seq Scan"
+          },
+          {
+            "kind": "aggregation",
+            "before": "",
+            "after": "Sort"
+          }
+        ],
+        "planBefore": "Limit  (rows=2 cost=8.9)\n  Index Scan on invoices using invoices_account_issued_idx  (rows=20 cost=84.8)\n",
+        "planAfter": "Limit  (rows=1 cost=6883.5)\n  Gather Merge  (rows=12 cost=6884.8)\n    Sort  (rows=12 cost=5883.4)\n      Seq Scan on invoices  (rows=12 cost=5883.2)\n",
+        "suggestion": {
+          "text": "Recreate the index without blocking writes.",
+          "sql": "CREATE INDEX CONCURRENTLY invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC);"
+        },
+        "resolvedAt": "2026-11-08T13:16:19.958248937+01:00",
+        "resolvedMs": 0.06959135164804169,
+        "verification": "back to 0.07 ms from a worst of 91.00 ms (baseline 0.08 ms); after index invoices_account_issued_idx was created",
+        "worstMs": 91.00294606086922
+      }
+    ],
+    "queries": [
+      {
+        "id": "-6814156851655559406",
+        "text": "SELECT paid_at, amount FROM billing.payments WHERE invoice_id = $1",
+        "firstSeen": "2026-11-08T13:15:29.95845745+01:00",
+        "series": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "calls": 40,
+            "meanMs": 0.044237549999999994,
+            "rowsPerCall": 0.65,
+            "readPerCall": 0.8,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:30.95821304+01:00",
+            "calls": 39,
+            "meanMs": 0.053465923076923105,
+            "rowsPerCall": 0.6153846153846154,
+            "readPerCall": 0.8717948717948718,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:31.958471733+01:00",
+            "calls": 40,
+            "meanMs": 0.04714840000000002,
+            "rowsPerCall": 0.675,
+            "readPerCall": 0.875,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:32.958169069+01:00",
+            "calls": 40,
+            "meanMs": 0.047382950000000056,
+            "rowsPerCall": 0.55,
+            "readPerCall": 0.825,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:33.95803757+01:00",
+            "calls": 40,
+            "meanMs": 0.044400025000000065,
+            "rowsPerCall": 0.75,
+            "readPerCall": 0.7,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:34.958484494+01:00",
+            "calls": 41,
+            "meanMs": 0.04550400000000006,
+            "rowsPerCall": 0.6097560975609756,
+            "readPerCall": 0.7317073170731707,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:35.958181612+01:00",
+            "calls": 39,
+            "meanMs": 0.06398851282051264,
+            "rowsPerCall": 0.5897435897435898,
+            "readPerCall": 0.7435897435897436,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:36.958174846+01:00",
+            "calls": 40,
+            "meanMs": 0.04379187500000024,
+            "rowsPerCall": 0.65,
+            "readPerCall": 0.575,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:37.958509449+01:00",
+            "calls": 40,
+            "meanMs": 0.04162542500000006,
+            "rowsPerCall": 0.55,
+            "readPerCall": 0.5,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:38.957785069+01:00",
+            "calls": 40,
+            "meanMs": 0.04382384999999998,
+            "rowsPerCall": 0.7,
+            "readPerCall": 0.475,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:39.957511384+01:00",
+            "calls": 40,
+            "meanMs": 0.04003335000000004,
+            "rowsPerCall": 0.6,
+            "readPerCall": 0.425,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:40.958484446+01:00",
+            "calls": 40,
+            "meanMs": 0.041401624999999956,
+            "rowsPerCall": 0.675,
+            "readPerCall": 0.525,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:41.958063483+01:00",
+            "calls": 41,
+            "meanMs": 0.04447273170731721,
+            "rowsPerCall": 0.6585365853658537,
+            "readPerCall": 0.4146341463414634,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:42.958750909+01:00",
+            "calls": 39,
+            "meanMs": 0.05391607692307687,
+            "rowsPerCall": 0.5641025641025641,
+            "readPerCall": 0.5128205128205128,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:43.957972232+01:00",
+            "calls": 40,
+            "meanMs": 0.04159182500000007,
+            "rowsPerCall": 0.6,
+            "readPerCall": 0.4,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:44.957410007+01:00",
+            "calls": 40,
+            "meanMs": 0.047492675000000074,
+            "rowsPerCall": 0.7,
+            "readPerCall": 0.4,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:45.957356399+01:00",
+            "calls": 40,
+            "meanMs": 0.041482125000000106,
+            "rowsPerCall": 0.55,
+            "readPerCall": 0.425,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:46.958458862+01:00",
+            "calls": 40,
+            "meanMs": 0.042500824999999944,
+            "rowsPerCall": 0.65,
+            "readPerCall": 0.375,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:47.957766123+01:00",
+            "calls": 41,
+            "meanMs": 0.04206063414634161,
+            "rowsPerCall": 0.6585365853658537,
+            "readPerCall": 0.3902439024390244,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:48.957540448+01:00",
+            "calls": 39,
+            "meanMs": 0.03748987179487182,
+            "rowsPerCall": 0.5897435897435898,
+            "readPerCall": 0.1282051282051282,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "calls": 41,
+            "meanMs": 0.033296170731706876,
+            "rowsPerCall": 0.6585365853658537,
+            "readPerCall": 0.2926829268292683,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:50.958420239+01:00",
+            "calls": 40,
+            "meanMs": 0.03415349999999986,
+            "rowsPerCall": 0.525,
+            "readPerCall": 0.125,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:51.95878909+01:00",
+            "calls": 40,
+            "meanMs": 0.033817399999999866,
+            "rowsPerCall": 0.7,
+            "readPerCall": 0.275,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:52.958538865+01:00",
+            "calls": 40,
+            "meanMs": 0.035507050000000005,
+            "rowsPerCall": 0.65,
+            "readPerCall": 0.2,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:53.959056748+01:00",
+            "calls": 39,
+            "meanMs": 0.06032538461538523,
+            "rowsPerCall": 0.6153846153846154,
+            "readPerCall": 0.2564102564102564,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:54.95796419+01:00",
+            "calls": 40,
+            "meanMs": 0.04052057500000004,
+            "rowsPerCall": 0.6,
+            "readPerCall": 0.15,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:55.958350784+01:00",
+            "calls": 40,
+            "meanMs": 0.049960499999999894,
+            "rowsPerCall": 0.65,
+            "readPerCall": 0.225,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:56.958124336+01:00",
+            "calls": 40,
+            "meanMs": 0.032682775000000316,
+            "rowsPerCall": 0.6,
+            "readPerCall": 0.325,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:57.957471566+01:00",
+            "calls": 40,
+            "meanMs": 0.06835609999999956,
+            "rowsPerCall": 0.5,
+            "readPerCall": 0.175,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:58.958410055+01:00",
+            "calls": 40,
+            "meanMs": 0.03562027500000031,
+            "rowsPerCall": 0.525,
+            "readPerCall": 0.125,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:59.957727524+01:00",
+            "calls": 41,
+            "meanMs": 0.17744343902439066,
+            "rowsPerCall": 0.6341463414634146,
+            "readPerCall": 0.1951219512195122,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:00.957700247+01:00",
+            "calls": 40,
+            "meanMs": 0.03089712500000008,
+            "rowsPerCall": 0.5,
+            "readPerCall": 0.2,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:01.958929586+01:00",
+            "calls": 40,
+            "meanMs": 0.03918867499999941,
+            "rowsPerCall": 0.65,
+            "readPerCall": 0.175,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:02.95817508+01:00",
+            "calls": 40,
+            "meanMs": 0.037267574999998845,
+            "rowsPerCall": 0.8,
+            "readPerCall": 0.175,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:03.958286289+01:00",
+            "calls": 39,
+            "meanMs": 0.04054133333333345,
+            "rowsPerCall": 0.7692307692307693,
+            "readPerCall": 0.10256410256410256,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:04.957498637+01:00",
+            "calls": 41,
+            "meanMs": 0.03542790243902516,
+            "rowsPerCall": 0.6585365853658537,
+            "readPerCall": 0.0975609756097561,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:05.957869351+01:00",
+            "calls": 40,
+            "meanMs": 0.038053774999999845,
+            "rowsPerCall": 0.7,
+            "readPerCall": 0.1,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:06.958186566+01:00",
+            "calls": 40,
+            "meanMs": 0.0354706249999996,
+            "rowsPerCall": 0.7,
+            "readPerCall": 0.075,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:07.958095087+01:00",
+            "calls": 39,
+            "meanMs": 0.03439976923076944,
+            "rowsPerCall": 0.6666666666666666,
+            "readPerCall": 0.07692307692307693,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:08.957571508+01:00",
+            "calls": 41,
+            "meanMs": 0.036852365853657885,
+            "rowsPerCall": 0.6341463414634146,
+            "readPerCall": 0.14634146341463414,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:09.958272386+01:00",
+            "calls": 40,
+            "meanMs": 0.035925725000000595,
+            "rowsPerCall": 0.6,
+            "readPerCall": 0.075,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:10.959067327+01:00",
+            "calls": 39,
+            "meanMs": 0.03663315384615373,
+            "rowsPerCall": 0.6410256410256411,
+            "readPerCall": 0.02564102564102564,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:11.958882195+01:00",
+            "calls": 41,
+            "meanMs": 0.04035270731707277,
+            "rowsPerCall": 0.7073170731707317,
+            "readPerCall": 0.04878048780487805,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:12.958165084+01:00",
+            "calls": 40,
+            "meanMs": 0.0381598000000011,
+            "rowsPerCall": 0.625,
+            "readPerCall": 0.125,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:13.95785824+01:00",
+            "calls": 40,
+            "meanMs": 0.03710907500000005,
+            "rowsPerCall": 0.675,
+            "readPerCall": 0.05,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:14.957722452+01:00",
+            "calls": 39,
+            "meanMs": 0.033090282051282734,
+            "rowsPerCall": 0.5128205128205128,
+            "readPerCall": 0.02564102564102564,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:15.958200189+01:00",
+            "calls": 40,
+            "meanMs": 0.033856125000000147,
+            "rowsPerCall": 0.675,
+            "readPerCall": 0.125,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:16.958216134+01:00",
+            "calls": 40,
+            "meanMs": 0.04105642500000002,
+            "rowsPerCall": 0.6,
+            "readPerCall": 0.075,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:17.958169784+01:00",
+            "calls": 40,
+            "meanMs": 0.03702114999999999,
+            "rowsPerCall": 0.5,
+            "readPerCall": 0.1,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:18.95837749+01:00",
+            "calls": 41,
+            "meanMs": 0.042611902439024164,
+            "rowsPerCall": 0.4878048780487805,
+            "readPerCall": 0.14634146341463414,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:19.958248937+01:00",
+            "calls": 39,
+            "meanMs": 0.043847564102564754,
+            "rowsPerCall": 0.6410256410256411,
+            "readPerCall": 0.05128205128205128,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:20.958156421+01:00",
+            "calls": 40,
+            "meanMs": 0.05038710000000002,
+            "rowsPerCall": 0.625,
+            "readPerCall": 0.025,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:21.958413246+01:00",
+            "calls": 41,
+            "meanMs": 0.03332604878048836,
+            "rowsPerCall": 0.5853658536585366,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "calls": 39,
+            "meanMs": 0.1118260000000001,
+            "rowsPerCall": 0.4358974358974359,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:23.957753379+01:00",
+            "calls": 40,
+            "meanMs": 0.04959342500000048,
+            "rowsPerCall": 0.7,
+            "readPerCall": 0.05,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:24.958036893+01:00",
+            "calls": 40,
+            "meanMs": 0.034242899999998855,
+            "rowsPerCall": 0.55,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:25.957803864+01:00",
+            "calls": 39,
+            "meanMs": 0.037785692307692256,
+            "rowsPerCall": 0.6153846153846154,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:26.959018547+01:00",
+            "calls": 41,
+            "meanMs": 0.038682951219512096,
+            "rowsPerCall": 0.6341463414634146,
+            "readPerCall": 0.04878048780487805,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:27.958341492+01:00",
+            "calls": 39,
+            "meanMs": 0.03917405128205022,
+            "rowsPerCall": 0.5641025641025641,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:28.958122981+01:00",
+            "calls": 40,
+            "meanMs": 0.04044470000000011,
+            "rowsPerCall": 0.575,
+            "readPerCall": 0.025,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:29.95830189+01:00",
+            "calls": 40,
+            "meanMs": 0.036574174999999445,
+            "rowsPerCall": 0.625,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:30.957754742+01:00",
+            "calls": 40,
+            "meanMs": 0.03755034999999936,
+            "rowsPerCall": 0.625,
+            "readPerCall": 0.025,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:31.957759695+01:00",
+            "calls": 41,
+            "meanMs": 0.03779590243902515,
+            "rowsPerCall": 0.5853658536585366,
+            "readPerCall": 0.024390243902439025,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:32.958387565+01:00",
+            "calls": 40,
+            "meanMs": 0.04033037499999992,
+            "rowsPerCall": 0.625,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:33.957478489+01:00",
+            "calls": 40,
+            "meanMs": 0.03763134999999949,
+            "rowsPerCall": 0.575,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          }
+        ],
+        "plans": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "fingerprint": "de24a0364396",
+            "tree": "Index Scan on payments using payments_invoice_idx  (rows=1 cost=8.4)\n"
+          }
+        ],
+        "insights": []
+      },
+      {
+        "id": "8238662541593331",
+        "text": "SELECT account_id, metric, sum(quantity) AS q FROM billing.usage WHERE day \u003e= current_date - $1::int\n\t\t\t\tGROUP BY account_id, metric ORDER BY q DESC LIMIT $2",
+        "firstSeen": "2026-11-08T13:15:29.95845745+01:00",
+        "series": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "calls": 2,
+            "meanMs": 97.3758195,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:30.95821304+01:00",
+            "calls": 2,
+            "meanMs": 109.88966750000003,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:31.958471733+01:00",
+            "calls": 2,
+            "meanMs": 132.32471550000002,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:32.958169069+01:00",
+            "calls": 2,
+            "meanMs": 126.210237,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:33.95803757+01:00",
+            "calls": 2,
+            "meanMs": 110.77225549999997,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:34.958484494+01:00",
+            "calls": 2,
+            "meanMs": 161.10775449999994,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:35.958181612+01:00",
+            "calls": 2,
+            "meanMs": 109.57859050000002,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:36.958174846+01:00",
+            "calls": 2,
+            "meanMs": 202.65668349999999,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:37.958509449+01:00",
+            "calls": 2,
+            "meanMs": 112.45667800000001,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:38.957785069+01:00",
+            "calls": 2,
+            "meanMs": 135.46288600000003,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:39.957511384+01:00",
+            "calls": 2,
+            "meanMs": 150.23057799999992,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:40.958484446+01:00",
+            "calls": 2,
+            "meanMs": 137.4094889999999,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:41.958063483+01:00",
+            "calls": 2,
+            "meanMs": 181.7596484999999,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:42.958750909+01:00",
+            "calls": 2,
+            "meanMs": 108.25147399999992,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:43.957972232+01:00",
+            "calls": 2,
+            "meanMs": 138.68499900000006,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:44.957410007+01:00",
+            "calls": 2,
+            "meanMs": 135.16990799999985,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:45.957356399+01:00",
+            "calls": 2,
+            "meanMs": 119.14528449999989,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:46.958458862+01:00",
+            "calls": 2,
+            "meanMs": 87.09833949999984,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:47.957766123+01:00",
+            "calls": 2,
+            "meanMs": 168.86151150000023,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:48.957540448+01:00",
+            "calls": 2,
+            "meanMs": 217.74649200000022,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "calls": 1,
+            "meanMs": 315.52600299999995,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:50.958420239+01:00",
+            "calls": 2,
+            "meanMs": 790.2481404999999,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:51.95878909+01:00",
+            "calls": 3,
+            "meanMs": 410.072695333333,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:52.958538865+01:00",
+            "calls": 2,
+            "meanMs": 292.87837800000034,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:53.959056748+01:00",
+            "calls": 2,
+            "meanMs": 181.18635799999993,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:54.95796419+01:00",
+            "calls": 2,
+            "meanMs": 307.6190024999996,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:55.958350784+01:00",
+            "calls": 2,
+            "meanMs": 231.54873249999946,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:56.958124336+01:00",
+            "calls": 2,
+            "meanMs": 155.73073449999993,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:57.957471566+01:00",
+            "calls": 2,
+            "meanMs": 300.49870050000027,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:58.958410055+01:00",
+            "calls": 2,
+            "meanMs": 249.1602009999997,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:59.957727524+01:00",
+            "calls": 2,
+            "meanMs": 414.6959665000004,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:00.957700247+01:00",
+            "calls": 1,
+            "meanMs": 363.71769400000085,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:01.958929586+01:00",
+            "calls": 3,
+            "meanMs": 454.19961333333293,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:02.95817508+01:00",
+            "calls": 2,
+            "meanMs": 394.6230245000006,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:03.958286289+01:00",
+            "calls": 2,
+            "meanMs": 329.32982600000014,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:04.957498637+01:00",
+            "calls": 2,
+            "meanMs": 355.67211999999927,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:05.957869351+01:00",
+            "calls": 2,
+            "meanMs": 387.7520134999995,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:06.958186566+01:00",
+            "calls": 2,
+            "meanMs": 308.1623455000008,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:07.958095087+01:00",
+            "calls": 1,
+            "meanMs": 243.9467020000011,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:08.957571508+01:00",
+            "calls": 3,
+            "meanMs": 406.775928666666,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:09.958272386+01:00",
+            "calls": 2,
+            "meanMs": 230.84689049999906,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:10.959067327+01:00",
+            "calls": 2,
+            "meanMs": 286.49464649999936,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:11.958882195+01:00",
+            "calls": 2,
+            "meanMs": 412.15202749999844,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:12.958165084+01:00",
+            "calls": 1,
+            "meanMs": 694.8452010000001,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:13.95785824+01:00",
+            "calls": 1,
+            "meanMs": 720.6636990000006,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:14.957722452+01:00",
+            "calls": 4,
+            "meanMs": 594.64195475,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:15.958200189+01:00",
+            "calls": 2,
+            "meanMs": 136.39160449999872,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:16.958216134+01:00",
+            "calls": 2,
+            "meanMs": 121.60506450000139,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:17.958169784+01:00",
+            "calls": 2,
+            "meanMs": 113.136305,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:18.95837749+01:00",
+            "calls": 2,
+            "meanMs": 133.28882899999917,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:19.958248937+01:00",
+            "calls": 2,
+            "meanMs": 111.86369949999971,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:20.958156421+01:00",
+            "calls": 2,
+            "meanMs": 114.53431300000011,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:21.958413246+01:00",
+            "calls": 2,
+            "meanMs": 119.69004750000022,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "calls": 2,
+            "meanMs": 157.05977600000006,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:23.957753379+01:00",
+            "calls": 2,
+            "meanMs": 120.75743499999953,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:24.958036893+01:00",
+            "calls": 2,
+            "meanMs": 106.21639200000027,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:25.957803864+01:00",
+            "calls": 2,
+            "meanMs": 105.9996984999998,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:26.959018547+01:00",
+            "calls": 2,
+            "meanMs": 103.88822599999912,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:27.958341492+01:00",
+            "calls": 2,
+            "meanMs": 108.2674850000003,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:28.958122981+01:00",
+            "calls": 2,
+            "meanMs": 105.68138999999974,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:29.95830189+01:00",
+            "calls": 2,
+            "meanMs": 117.29377149999891,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:30.957754742+01:00",
+            "calls": 2,
+            "meanMs": 86.21281850000014,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:31.957759695+01:00",
+            "calls": 2,
+            "meanMs": 109.6691565000001,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:32.958387565+01:00",
+            "calls": 2,
+            "meanMs": 137.05680500000017,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:33.957478489+01:00",
+            "calls": 2,
+            "meanMs": 127.46716600000036,
+            "rowsPerCall": 20,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          }
+        ],
+        "plans": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "fingerprint": "997d664db2e5",
+            "tree": "Limit  (rows=3931 cost=14317.7)\n  Sort  (rows=39306 cost=14406.1)\n    Aggregate  (rows=39306 cost=11308.3)\n      Seq Scan on usage  (rows=133333 cost=9817.0)\n"
+          }
+        ],
+        "insights": [
+          {
+            "id": 2,
+            "kind": "LATENCY_REGRESSION",
+            "signal": "latency",
+            "queryId": "8238662541593331",
+            "query": "SELECT account_id, metric, sum(quantity) AS q FROM billing.usage WHERE day \u003e= current_date - $1::int\n\t\t\t\tGROUP BY account_id, metric ORDER BY q DESC LIMIT $2",
+            "status": "RESOLVED",
+            "openedAt": "2026-11-08T13:15:52.958538865+01:00",
+            "suspectedAt": "2026-11-08T13:15:47.958420239+01:00",
+            "baselineMs": 139.76562329166663,
+            "currentMs": 119.42961116666629,
+            "callsPerSec": 2,
+            "impactMsPerSec": 0,
+            "cause": {
+              "code": "RESOURCE_CONTENTION",
+              "confidence": 0.55,
+              "summary": "the database is 8.3x busier than before and this query waits its turn"
+            },
+            "causeAtOpen": "RESOURCE_CONTENTION",
+            "evidence": [
+              "mean time 139.77 ms -\u003e 361.82 ms (2.6x) over 8 calls",
+              "database time 287 -\u003e 2380 ms per second across all queries"
+            ],
+            "planAfter": "Limit  (rows=3931 cost=14317.7)\n  Sort  (rows=39306 cost=14406.1)\n    Aggregate  (rows=39306 cost=11308.3)\n      Seq Scan on usage  (rows=133333 cost=9817.0)\n",
+            "suggestion": {
+              "text": "The plan did not change; the whole database got busier. Fix what is taking the time first. The query that gained the most: SELECT id, amount, state FROM billing.invoices WHERE account_id = $1 ORDER BY issued_at DESC LIMIT $2"
+            },
+            "resolvedAt": "2026-11-08T13:16:19.958248937+01:00",
+            "resolvedMs": 119.42961116666629,
+            "verification": "back to 119.43 ms from a worst of 577.30 ms (baseline 139.77 ms); after index invoices_account_issued_idx was created",
+            "worstMs": 577.2975967499997
+          }
+        ]
+      },
+      {
+        "id": "454656202364398734",
+        "text": "SELECT id, plan FROM billing.accounts WHERE id = ANY($1)",
+        "firstSeen": "2026-11-08T13:15:29.95845745+01:00",
+        "series": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "calls": 5,
+            "meanMs": 0.12461639999999999,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:30.95821304+01:00",
+            "calls": 4,
+            "meanMs": 0.14984000000000003,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:31.958471733+01:00",
+            "calls": 6,
+            "meanMs": 0.13149983333333337,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:32.958169069+01:00",
+            "calls": 4,
+            "meanMs": 0.12031649999999994,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:33.95803757+01:00",
+            "calls": 5,
+            "meanMs": 0.14356919999999995,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:34.958484494+01:00",
+            "calls": 6,
+            "meanMs": 0.11000500000000013,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:35.958181612+01:00",
+            "calls": 5,
+            "meanMs": 0.15295439999999996,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:36.958174846+01:00",
+            "calls": 4,
+            "meanMs": 0.2366815,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:37.958509449+01:00",
+            "calls": 5,
+            "meanMs": 0.14656719999999995,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:38.957785069+01:00",
+            "calls": 5,
+            "meanMs": 0.1366116,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:39.957511384+01:00",
+            "calls": 5,
+            "meanMs": 0.15101679999999984,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:40.958484446+01:00",
+            "calls": 6,
+            "meanMs": 0.16137099999999993,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:41.958063483+01:00",
+            "calls": 5,
+            "meanMs": 0.13064900000000002,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:42.958750909+01:00",
+            "calls": 5,
+            "meanMs": 0.16610759999999977,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:43.957972232+01:00",
+            "calls": 4,
+            "meanMs": 0.12030925000000003,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:44.957410007+01:00",
+            "calls": 5,
+            "meanMs": 0.1257678000000002,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:45.957356399+01:00",
+            "calls": 5,
+            "meanMs": 0.1297539999999998,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:46.958458862+01:00",
+            "calls": 5,
+            "meanMs": 0.13831419999999994,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:47.957766123+01:00",
+            "calls": 5,
+            "meanMs": 0.13754979999999967,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:48.957540448+01:00",
+            "calls": 5,
+            "meanMs": 0.14318160000000013,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "calls": 5,
+            "meanMs": 0.12597880000000003,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:50.958420239+01:00",
+            "calls": 6,
+            "meanMs": 0.14413916666666685,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:51.95878909+01:00",
+            "calls": 5,
+            "meanMs": 0.11902120000000024,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:52.958538865+01:00",
+            "calls": 5,
+            "meanMs": 0.15801939999999987,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:53.959056748+01:00",
+            "calls": 4,
+            "meanMs": 0.1275012500000008,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:54.95796419+01:00",
+            "calls": 5,
+            "meanMs": 0.17752300000000004,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:55.958350784+01:00",
+            "calls": 6,
+            "meanMs": 0.13567100000000032,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:56.958124336+01:00",
+            "calls": 4,
+            "meanMs": 0.2423182499999994,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:57.957471566+01:00",
+            "calls": 6,
+            "meanMs": 0.1568898333333332,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:58.958410055+01:00",
+            "calls": 4,
+            "meanMs": 0.19583824999999955,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:59.957727524+01:00",
+            "calls": 5,
+            "meanMs": 1.0758068,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:00.957700247+01:00",
+            "calls": 6,
+            "meanMs": 0.13680600000000057,
+            "rowsPerCall": 24.833333333333332,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:01.958929586+01:00",
+            "calls": 5,
+            "meanMs": 0.1433804000000009,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:02.95817508+01:00",
+            "calls": 5,
+            "meanMs": 0.11529080000000036,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:03.958286289+01:00",
+            "calls": 4,
+            "meanMs": 0.14246999999999943,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:04.957498637+01:00",
+            "calls": 6,
+            "meanMs": 0.140035666666666,
+            "rowsPerCall": 24.833333333333332,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:05.957869351+01:00",
+            "calls": 5,
+            "meanMs": 0.15891060000000082,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:06.958186566+01:00",
+            "calls": 4,
+            "meanMs": 0.12239325000000179,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:07.958095087+01:00",
+            "calls": 5,
+            "meanMs": 0.13642839999999978,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:08.957571508+01:00",
+            "calls": 6,
+            "meanMs": 0.14463899999999916,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:09.958272386+01:00",
+            "calls": 4,
+            "meanMs": 0.0956469999999996,
+            "rowsPerCall": 24.75,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:10.959067327+01:00",
+            "calls": 5,
+            "meanMs": 0.15776859999999998,
+            "rowsPerCall": 24.8,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:11.958882195+01:00",
+            "calls": 6,
+            "meanMs": 0.14262449999999896,
+            "rowsPerCall": 24.666666666666668,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:12.958165084+01:00",
+            "calls": 5,
+            "meanMs": 0.17838879999999904,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:13.95785824+01:00",
+            "calls": 5,
+            "meanMs": 0.12786299999999784,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:14.957722452+01:00",
+            "calls": 4,
+            "meanMs": 0.12899725000000117,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:15.958200189+01:00",
+            "calls": 5,
+            "meanMs": 0.13183559999999944,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:16.958216134+01:00",
+            "calls": 5,
+            "meanMs": 0.1100135999999992,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:17.958169784+01:00",
+            "calls": 5,
+            "meanMs": 0.11620080000000144,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:18.95837749+01:00",
+            "calls": 5,
+            "meanMs": 0.1501886000000013,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:19.958248937+01:00",
+            "calls": 6,
+            "meanMs": 0.15085833333333318,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:20.958156421+01:00",
+            "calls": 4,
+            "meanMs": 0.1609922500000014,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:21.958413246+01:00",
+            "calls": 5,
+            "meanMs": 0.13897200000000112,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "calls": 5,
+            "meanMs": 0.15663100000000157,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:23.957753379+01:00",
+            "calls": 5,
+            "meanMs": 0.16151820000000044,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:24.958036893+01:00",
+            "calls": 5,
+            "meanMs": 0.33221180000000033,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:25.957803864+01:00",
+            "calls": 5,
+            "meanMs": 0.10736940000000032,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:26.959018547+01:00",
+            "calls": 6,
+            "meanMs": 0.12362000000000133,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:27.958341492+01:00",
+            "calls": 4,
+            "meanMs": 0.1317857500000006,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:28.958122981+01:00",
+            "calls": 5,
+            "meanMs": 0.12100319999999982,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:29.95830189+01:00",
+            "calls": 5,
+            "meanMs": 0.1426327999999998,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:30.957754742+01:00",
+            "calls": 5,
+            "meanMs": 0.14357800000000082,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:31.957759695+01:00",
+            "calls": 5,
+            "meanMs": 0.13861179999999962,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:32.958387565+01:00",
+            "calls": 5,
+            "meanMs": 0.1886591999999993,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:33.957478489+01:00",
+            "calls": 6,
+            "meanMs": 0.11877233333333355,
+            "rowsPerCall": 25,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          }
+        ],
+        "plans": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "fingerprint": "cc7ff3fd771e",
+            "tree": "Index Scan on accounts using accounts_pkey  (rows=10 cost=47.0)\n"
+          }
+        ],
+        "insights": []
+      },
+      {
+        "id": "1874575902785297866",
+        "text": "SELECT plan, balance FROM billing.accounts WHERE id = $1",
+        "firstSeen": "2026-11-08T13:15:29.95845745+01:00",
+        "series": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "calls": 60,
+            "meanMs": 0.02116841666666665,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:30.95821304+01:00",
+            "calls": 60,
+            "meanMs": 0.0228435333333333,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:31.958471733+01:00",
+            "calls": 61,
+            "meanMs": 0.02628126229508196,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:32.958169069+01:00",
+            "calls": 59,
+            "meanMs": 0.02382701694915256,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:33.95803757+01:00",
+            "calls": 60,
+            "meanMs": 0.022460966666666683,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:34.958484494+01:00",
+            "calls": 61,
+            "meanMs": 0.022310967213114825,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:35.958181612+01:00",
+            "calls": 59,
+            "meanMs": 0.020633559322033874,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:36.958174846+01:00",
+            "calls": 60,
+            "meanMs": 0.02470934999999995,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:37.958509449+01:00",
+            "calls": 60,
+            "meanMs": 0.021560866666666633,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:38.957785069+01:00",
+            "calls": 60,
+            "meanMs": 0.02209611666666665,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:39.957511384+01:00",
+            "calls": 60,
+            "meanMs": 0.027648116666666667,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:40.958484446+01:00",
+            "calls": 60,
+            "meanMs": 0.029433433333333467,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:41.958063483+01:00",
+            "calls": 60,
+            "meanMs": 0.02909641666666663,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:42.958750909+01:00",
+            "calls": 60,
+            "meanMs": 0.020991416666666752,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:43.957972232+01:00",
+            "calls": 60,
+            "meanMs": 0.05380048333333332,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:44.957410007+01:00",
+            "calls": 60,
+            "meanMs": 0.021652583333333197,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:45.957356399+01:00",
+            "calls": 60,
+            "meanMs": 0.02404253333333326,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:46.958458862+01:00",
+            "calls": 60,
+            "meanMs": 0.022155616666666707,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:47.957766123+01:00",
+            "calls": 61,
+            "meanMs": 0.021282262295081945,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:48.957540448+01:00",
+            "calls": 59,
+            "meanMs": 0.021669508474576427,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "calls": 60,
+            "meanMs": 0.02015484999999983,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:50.958420239+01:00",
+            "calls": 60,
+            "meanMs": 0.025398049999999964,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:51.95878909+01:00",
+            "calls": 60,
+            "meanMs": 0.02902604999999987,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:52.958538865+01:00",
+            "calls": 60,
+            "meanMs": 0.02300713333333372,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:53.959056748+01:00",
+            "calls": 59,
+            "meanMs": 0.021155610169491808,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:54.95796419+01:00",
+            "calls": 60,
+            "meanMs": 0.023649783333333355,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:55.958350784+01:00",
+            "calls": 60,
+            "meanMs": 0.02148740000000006,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:56.958124336+01:00",
+            "calls": 60,
+            "meanMs": 0.02136475000000016,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:57.957471566+01:00",
+            "calls": 60,
+            "meanMs": 0.02499259999999962,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:58.958410055+01:00",
+            "calls": 60,
+            "meanMs": 0.021494849999999725,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:59.957727524+01:00",
+            "calls": 61,
+            "meanMs": 0.021721475409836048,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:00.957700247+01:00",
+            "calls": 60,
+            "meanMs": 0.021567516666666363,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:01.958929586+01:00",
+            "calls": 60,
+            "meanMs": 0.026332633333333532,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:02.95817508+01:00",
+            "calls": 60,
+            "meanMs": 0.020973516666666706,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:03.958286289+01:00",
+            "calls": 59,
+            "meanMs": 0.02144928813559293,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:04.957498637+01:00",
+            "calls": 61,
+            "meanMs": 0.021561803278688146,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:05.957869351+01:00",
+            "calls": 60,
+            "meanMs": 0.02328196666666642,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:06.958186566+01:00",
+            "calls": 59,
+            "meanMs": 0.020976186440677946,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:07.958095087+01:00",
+            "calls": 61,
+            "meanMs": 0.13500277049180326,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:08.957571508+01:00",
+            "calls": 60,
+            "meanMs": 0.022848533333332928,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:09.958272386+01:00",
+            "calls": 59,
+            "meanMs": 0.024066016949151767,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:10.959067327+01:00",
+            "calls": 60,
+            "meanMs": 0.025833633333333238,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:11.958882195+01:00",
+            "calls": 61,
+            "meanMs": 0.023369229508196927,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:12.958165084+01:00",
+            "calls": 61,
+            "meanMs": 0.024030852459016518,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:13.95785824+01:00",
+            "calls": 58,
+            "meanMs": 0.023966879310344583,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:14.957722452+01:00",
+            "calls": 61,
+            "meanMs": 0.023273114754098715,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:15.958200189+01:00",
+            "calls": 59,
+            "meanMs": 0.023094525423727637,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:16.958216134+01:00",
+            "calls": 60,
+            "meanMs": 0.029983749999999768,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:17.958169784+01:00",
+            "calls": 60,
+            "meanMs": 0.023842233333334188,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:18.95837749+01:00",
+            "calls": 61,
+            "meanMs": 0.02948626229508139,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:19.958248937+01:00",
+            "calls": 60,
+            "meanMs": 0.024629666666666595,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:20.958156421+01:00",
+            "calls": 60,
+            "meanMs": 0.05570733333333351,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:21.958413246+01:00",
+            "calls": 60,
+            "meanMs": 0.024712633333332925,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "calls": 59,
+            "meanMs": 0.02989279661016936,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:23.957753379+01:00",
+            "calls": 60,
+            "meanMs": 0.025618866666667135,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:24.958036893+01:00",
+            "calls": 60,
+            "meanMs": 0.020787249999999584,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:25.957803864+01:00",
+            "calls": 59,
+            "meanMs": 0.02241898305084728,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:26.959018547+01:00",
+            "calls": 61,
+            "meanMs": 0.02108096721311474,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:27.958341492+01:00",
+            "calls": 59,
+            "meanMs": 0.02616757627118713,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:28.958122981+01:00",
+            "calls": 60,
+            "meanMs": 0.024959283333333578,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:29.95830189+01:00",
+            "calls": 60,
+            "meanMs": 0.023787933333333674,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:30.957754742+01:00",
+            "calls": 60,
+            "meanMs": 0.024186466666666226,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:31.957759695+01:00",
+            "calls": 61,
+            "meanMs": 0.02251495081967193,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:32.958387565+01:00",
+            "calls": 59,
+            "meanMs": 0.024044203389831095,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:33.957478489+01:00",
+            "calls": 61,
+            "meanMs": 0.021718311475410004,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          }
+        ],
+        "plans": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "fingerprint": "cc7ff3fd771e",
+            "tree": "Index Scan on accounts using accounts_pkey  (rows=1 cost=8.3)\n"
+          }
+        ],
+        "insights": []
+      },
+      {
+        "id": "5187105456957260150",
+        "text": "UPDATE billing.accounts SET balance = balance + $2 WHERE id = $1",
+        "firstSeen": "2026-11-08T13:15:29.95845745+01:00",
+        "series": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "calls": 14,
+            "meanMs": 0.06184400000000001,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:30.95821304+01:00",
+            "calls": 15,
+            "meanMs": 0.06881426666666667,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:31.958471733+01:00",
+            "calls": 15,
+            "meanMs": 0.07416686666666668,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:32.958169069+01:00",
+            "calls": 15,
+            "meanMs": 0.05616586666666675,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:33.95803757+01:00",
+            "calls": 15,
+            "meanMs": 0.0612564666666667,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:34.958484494+01:00",
+            "calls": 15,
+            "meanMs": 0.19375886666666656,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:35.958181612+01:00",
+            "calls": 15,
+            "meanMs": 0.05565060000000012,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:36.958174846+01:00",
+            "calls": 15,
+            "meanMs": 0.07585486666666696,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:37.958509449+01:00",
+            "calls": 15,
+            "meanMs": 0.05396919999999999,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:38.957785069+01:00",
+            "calls": 16,
+            "meanMs": 0.07859412499999985,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:39.957511384+01:00",
+            "calls": 14,
+            "meanMs": 0.06487985714285698,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:40.958484446+01:00",
+            "calls": 16,
+            "meanMs": 0.05514481250000003,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:41.958063483+01:00",
+            "calls": 15,
+            "meanMs": 0.0804721333333332,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:42.958750909+01:00",
+            "calls": 15,
+            "meanMs": 0.049571133333333135,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:43.957972232+01:00",
+            "calls": 14,
+            "meanMs": 0.06440478571428569,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:44.957410007+01:00",
+            "calls": 15,
+            "meanMs": 0.062095733333333195,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:45.957356399+01:00",
+            "calls": 15,
+            "meanMs": 0.09041293333333347,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:46.958458862+01:00",
+            "calls": 15,
+            "meanMs": 0.07916260000000032,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:47.957766123+01:00",
+            "calls": 16,
+            "meanMs": 0.051840999999999804,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:48.957540448+01:00",
+            "calls": 14,
+            "meanMs": 0.057790857142856665,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "calls": 15,
+            "meanMs": 0.054445400000000886,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:50.958420239+01:00",
+            "calls": 15,
+            "meanMs": 0.06060980000000029,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:51.95878909+01:00",
+            "calls": 15,
+            "meanMs": 0.054132733333333745,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:52.958538865+01:00",
+            "calls": 16,
+            "meanMs": 0.05668956249999946,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:53.959056748+01:00",
+            "calls": 14,
+            "meanMs": 0.06596535714285753,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:54.95796419+01:00",
+            "calls": 15,
+            "meanMs": 0.06566320000000042,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:55.958350784+01:00",
+            "calls": 15,
+            "meanMs": 0.0604901333333333,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:56.958124336+01:00",
+            "calls": 15,
+            "meanMs": 0.052108133333333244,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:57.957471566+01:00",
+            "calls": 15,
+            "meanMs": 0.06057806666666655,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:58.958410055+01:00",
+            "calls": 15,
+            "meanMs": 0.3771035333333325,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:59.957727524+01:00",
+            "calls": 16,
+            "meanMs": 0.05156231250000021,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:00.957700247+01:00",
+            "calls": 14,
+            "meanMs": 0.05848864285714279,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:01.958929586+01:00",
+            "calls": 16,
+            "meanMs": 0.06317012500000052,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:02.95817508+01:00",
+            "calls": 14,
+            "meanMs": 0.05403914285714251,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:03.958286289+01:00",
+            "calls": 15,
+            "meanMs": 0.05764386666666657,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:04.957498637+01:00",
+            "calls": 16,
+            "meanMs": 0.054698625000000334,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:05.957869351+01:00",
+            "calls": 15,
+            "meanMs": 0.06681946666666742,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:06.958186566+01:00",
+            "calls": 15,
+            "meanMs": 0.05102040000000064,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:07.958095087+01:00",
+            "calls": 15,
+            "meanMs": 0.05525253333333258,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:08.957571508+01:00",
+            "calls": 14,
+            "meanMs": 0.05690400000000092,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:09.958272386+01:00",
+            "calls": 15,
+            "meanMs": 0.05444713333333435,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:10.959067327+01:00",
+            "calls": 15,
+            "meanMs": 0.05777826666666594,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:11.958882195+01:00",
+            "calls": 15,
+            "meanMs": 0.05686333333333285,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:12.958165084+01:00",
+            "calls": 16,
+            "meanMs": 0.07192262500000046,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:13.95785824+01:00",
+            "calls": 15,
+            "meanMs": 0.06063993333333333,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:14.957722452+01:00",
+            "calls": 14,
+            "meanMs": 0.06136250000000081,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:15.958200189+01:00",
+            "calls": 15,
+            "meanMs": 0.04996713333333247,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:16.958216134+01:00",
+            "calls": 15,
+            "meanMs": 0.05649533333333352,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:17.958169784+01:00",
+            "calls": 15,
+            "meanMs": 0.06654399999999991,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:18.95837749+01:00",
+            "calls": 15,
+            "meanMs": 0.054677533333332445,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:19.958248937+01:00",
+            "calls": 16,
+            "meanMs": 0.06291543749999962,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:20.958156421+01:00",
+            "calls": 15,
+            "meanMs": 0.0519787333333331,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:21.958413246+01:00",
+            "calls": 14,
+            "meanMs": 0.058273857142857315,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "calls": 15,
+            "meanMs": 0.07058586666666618,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:23.957753379+01:00",
+            "calls": 15,
+            "meanMs": 0.07261346666666715,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:24.958036893+01:00",
+            "calls": 15,
+            "meanMs": 0.06152519999999934,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:25.957803864+01:00",
+            "calls": 15,
+            "meanMs": 0.0627560000000012,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:26.959018547+01:00",
+            "calls": 16,
+            "meanMs": 0.054035687499999874,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:27.958341492+01:00",
+            "calls": 14,
+            "meanMs": 0.0543570714285713,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:28.958122981+01:00",
+            "calls": 15,
+            "meanMs": 0.061445799999999905,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:29.95830189+01:00",
+            "calls": 15,
+            "meanMs": 0.058745333333333365,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:30.957754742+01:00",
+            "calls": 15,
+            "meanMs": 0.05674666666666752,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:31.957759695+01:00",
+            "calls": 15,
+            "meanMs": 0.04752119999999991,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:32.958387565+01:00",
+            "calls": 15,
+            "meanMs": 0.06834826666666724,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:33.957478489+01:00",
+            "calls": 15,
+            "meanMs": 0.06767193333333239,
+            "rowsPerCall": 1,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          }
+        ],
+        "plans": null,
+        "insights": []
+      },
+      {
+        "id": "7398522308264073453",
+        "text": "SELECT id, amount, state FROM billing.invoices WHERE account_id = $1 ORDER BY issued_at DESC LIMIT $2",
+        "firstSeen": "2026-11-08T13:15:29.95845745+01:00",
+        "series": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "calls": 29,
+            "meanMs": 0.08530041379310345,
+            "rowsPerCall": 5,
+            "readPerCall": 0.9310344827586207,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:30.95821304+01:00",
+            "calls": 30,
+            "meanMs": 0.06023066666666666,
+            "rowsPerCall": 5,
+            "readPerCall": 0.8,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:31.958471733+01:00",
+            "calls": 31,
+            "meanMs": 0.0638374193548387,
+            "rowsPerCall": 5,
+            "readPerCall": 0.8387096774193549,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:32.958169069+01:00",
+            "calls": 29,
+            "meanMs": 0.056668655172413714,
+            "rowsPerCall": 5,
+            "readPerCall": 0.6896551724137931,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:33.95803757+01:00",
+            "calls": 30,
+            "meanMs": 0.06153199999999988,
+            "rowsPerCall": 5,
+            "readPerCall": 0.6666666666666666,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:34.958484494+01:00",
+            "calls": 31,
+            "meanMs": 0.12830780645161294,
+            "rowsPerCall": 5,
+            "readPerCall": 0.45161290322580644,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:35.958181612+01:00",
+            "calls": 30,
+            "meanMs": 0.062214133333333164,
+            "rowsPerCall": 5,
+            "readPerCall": 0.5666666666666667,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:36.958174846+01:00",
+            "calls": 29,
+            "meanMs": 0.05754534482758616,
+            "rowsPerCall": 5,
+            "readPerCall": 0.4827586206896552,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:37.958509449+01:00",
+            "calls": 30,
+            "meanMs": 0.06436696666666641,
+            "rowsPerCall": 5,
+            "readPerCall": 0.7,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:38.957785069+01:00",
+            "calls": 30,
+            "meanMs": 0.06263376666666645,
+            "rowsPerCall": 5,
+            "readPerCall": 0.5,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:39.957511384+01:00",
+            "calls": 30,
+            "meanMs": 0.05597999999999992,
+            "rowsPerCall": 5,
+            "readPerCall": 0.43333333333333335,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:40.958484446+01:00",
+            "calls": 31,
+            "meanMs": 0.06563035483870981,
+            "rowsPerCall": 5,
+            "readPerCall": 0.2903225806451613,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:41.958063483+01:00",
+            "calls": 29,
+            "meanMs": 0.062010448275862336,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3448275862068966,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:42.958750909+01:00",
+            "calls": 30,
+            "meanMs": 0.17039763333333321,
+            "rowsPerCall": 5,
+            "readPerCall": 0.2,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:43.957972232+01:00",
+            "calls": 30,
+            "meanMs": 0.09712226666666694,
+            "rowsPerCall": 5,
+            "readPerCall": 0.26666666666666666,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:44.957410007+01:00",
+            "calls": 30,
+            "meanMs": 0.06379600000000044,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:45.957356399+01:00",
+            "calls": 30,
+            "meanMs": 0.06457560000000011,
+            "rowsPerCall": 5,
+            "readPerCall": 0.23333333333333334,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:46.958458862+01:00",
+            "calls": 30,
+            "meanMs": 0.0707132999999999,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3333333333333333,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:47.957766123+01:00",
+            "calls": 30,
+            "meanMs": 0.051192300000000066,
+            "rowsPerCall": 5,
+            "readPerCall": 0.2,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:48.957540448+01:00",
+            "calls": 30,
+            "meanMs": 35.793789999999994,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "calls": 28,
+            "meanMs": 88.38557682142857,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:50.958420239+01:00",
+            "calls": 27,
+            "meanMs": 135.41835866666668,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:51.95878909+01:00",
+            "calls": 35,
+            "meanMs": 49.59307305714288,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:52.958538865+01:00",
+            "calls": 30,
+            "meanMs": 53.95458486666685,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:53.959056748+01:00",
+            "calls": 30,
+            "meanMs": 27.952551933333357,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:54.95796419+01:00",
+            "calls": 30,
+            "meanMs": 56.0669623000001,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:55.958350784+01:00",
+            "calls": 30,
+            "meanMs": 31.10227626666668,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:56.958124336+01:00",
+            "calls": 30,
+            "meanMs": 26.076743133333306,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:57.957471566+01:00",
+            "calls": 30,
+            "meanMs": 42.02895290000003,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:58.958410055+01:00",
+            "calls": 30,
+            "meanMs": 39.073698533333726,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:15:59.957727524+01:00",
+            "calls": 29,
+            "meanMs": 67.43109658620659,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:00.957700247+01:00",
+            "calls": 29,
+            "meanMs": 67.47114489655159,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:01.958929586+01:00",
+            "calls": 31,
+            "meanMs": 71.80148354838691,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:02.95817508+01:00",
+            "calls": 30,
+            "meanMs": 58.47152883333329,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:03.958286289+01:00",
+            "calls": 30,
+            "meanMs": 60.57000276666658,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:04.957498637+01:00",
+            "calls": 31,
+            "meanMs": 53.820043677419065,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:05.957869351+01:00",
+            "calls": 30,
+            "meanMs": 56.89427853333327,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:06.958186566+01:00",
+            "calls": 30,
+            "meanMs": 43.86500376666651,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:07.958095087+01:00",
+            "calls": 29,
+            "meanMs": 58.408408448275466,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:08.957571508+01:00",
+            "calls": 31,
+            "meanMs": 55.06737877419378,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:09.958272386+01:00",
+            "calls": 29,
+            "meanMs": 38.33533027586236,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:10.959067327+01:00",
+            "calls": 31,
+            "meanMs": 57.140657903225915,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:11.958882195+01:00",
+            "calls": 28,
+            "meanMs": 73.73737410714264,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:12.958165084+01:00",
+            "calls": 31,
+            "meanMs": 100.3944500645157,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:13.95785824+01:00",
+            "calls": 25,
+            "meanMs": 140.68415899999906,
+            "rowsPerCall": 5,
+            "readPerCall": 0,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:14.957722452+01:00",
+            "calls": 36,
+            "meanMs": 43.01404111111131,
+            "rowsPerCall": 5,
+            "readPerCall": 0.6944444444444444,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:15.958200189+01:00",
+            "calls": 30,
+            "meanMs": 0.05567420000030931,
+            "rowsPerCall": 5,
+            "readPerCall": 0.9333333333333333,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:16.958216134+01:00",
+            "calls": 30,
+            "meanMs": 0.07078190000005027,
+            "rowsPerCall": 5,
+            "readPerCall": 0.8,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:17.958169784+01:00",
+            "calls": 30,
+            "meanMs": 0.07600216666639123,
+            "rowsPerCall": 5,
+            "readPerCall": 0.8,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:18.95837749+01:00",
+            "calls": 30,
+            "meanMs": 0.0698293999999199,
+            "rowsPerCall": 5,
+            "readPerCall": 0.7333333333333333,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:19.958248937+01:00",
+            "calls": 31,
+            "meanMs": 0.06315696774136965,
+            "rowsPerCall": 5,
+            "readPerCall": 0.6774193548387096,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:20.958156421+01:00",
+            "calls": 30,
+            "meanMs": 0.09596006666736988,
+            "rowsPerCall": 5,
+            "readPerCall": 0.5333333333333333,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:21.958413246+01:00",
+            "calls": 29,
+            "meanMs": 0.06281593103405361,
+            "rowsPerCall": 5,
+            "readPerCall": 0.7241379310344828,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "calls": 30,
+            "meanMs": 0.0635271666670936,
+            "rowsPerCall": 5,
+            "readPerCall": 0.43333333333333335,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:23.957753379+01:00",
+            "calls": 31,
+            "meanMs": 0.07505587096778571,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3870967741935484,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:24.958036893+01:00",
+            "calls": 29,
+            "meanMs": 0.060276344826732005,
+            "rowsPerCall": 5,
+            "readPerCall": 0.41379310344827586,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:25.957803864+01:00",
+            "calls": 30,
+            "meanMs": 0.05899046666648549,
+            "rowsPerCall": 5,
+            "readPerCall": 0.4666666666666667,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:26.959018547+01:00",
+            "calls": 31,
+            "meanMs": 0.059370999999960226,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3870967741935484,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:27.958341492+01:00",
+            "calls": 29,
+            "meanMs": 0.08923227586136159,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3103448275862069,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:28.958122981+01:00",
+            "calls": 30,
+            "meanMs": 0.06712226666665326,
+            "rowsPerCall": 5,
+            "readPerCall": 0.3,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:29.95830189+01:00",
+            "calls": 30,
+            "meanMs": 0.05116686666709332,
+            "rowsPerCall": 5,
+            "readPerCall": 0.23333333333333334,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:30.957754742+01:00",
+            "calls": 30,
+            "meanMs": 0.06132946666693897,
+            "rowsPerCall": 5,
+            "readPerCall": 0.4,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:31.957759695+01:00",
+            "calls": 30,
+            "meanMs": 0.054795766666696485,
+            "rowsPerCall": 5,
+            "readPerCall": 0.23333333333333334,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:32.958387565+01:00",
+            "calls": 30,
+            "meanMs": 0.06618970000102611,
+            "rowsPerCall": 5,
+            "readPerCall": 0.36666666666666664,
+            "tempPerCall": 0,
+            "lockShare": 0
+          },
+          {
+            "at": "2026-11-08T13:16:33.957478489+01:00",
+            "calls": 30,
+            "meanMs": 0.05265503333357628,
+            "rowsPerCall": 5,
+            "readPerCall": 0.26666666666666666,
+            "tempPerCall": 0,
+            "lockShare": 0
+          }
+        ],
+        "plans": [
+          {
+            "at": "2026-11-08T13:15:29.95845745+01:00",
+            "fingerprint": "e30cf1f2fc05",
+            "tree": "Limit  (rows=2 cost=8.9)\n  Index Scan on invoices using invoices_account_issued_idx  (rows=20 cost=84.8)\n"
+          },
+          {
+            "at": "2026-11-08T13:15:49.957948684+01:00",
+            "fingerprint": "e150b2db38bb",
+            "tree": "Limit  (rows=1 cost=6883.5)\n  Gather Merge  (rows=12 cost=6884.8)\n    Sort  (rows=12 cost=5883.4)\n      Seq Scan on invoices  (rows=12 cost=5883.2)\n"
+          },
+          {
+            "at": "2026-11-08T13:16:22.95832789+01:00",
+            "fingerprint": "e30cf1f2fc05",
+            "tree": "Limit  (rows=2 cost=8.9)\n  Index Scan on invoices using invoices_account_issued_idx  (rows=20 cost=84.8)\n"
+          }
+        ],
+        "insights": [
+          {
+            "id": 1,
+            "kind": "LATENCY_REGRESSION",
+            "signal": "latency",
+            "queryId": "7398522308264073453",
+            "query": "SELECT id, amount, state FROM billing.invoices WHERE account_id = $1 ORDER BY issued_at DESC LIMIT $2",
+            "status": "RESOLVED",
+            "openedAt": "2026-11-08T13:15:50.958420239+01:00",
+            "suspectedAt": "2026-11-08T13:15:45.957540448+01:00",
+            "baselineMs": 0.07835321025641027,
+            "currentMs": 0.06959135164804169,
+            "callsPerSec": 30.333333333333332,
+            "impactMsPerSec": 0,
+            "cause": {
+              "code": "MISSING_INDEX",
+              "confidence": 0.95,
+              "summary": "index invoices_account_issued_idx, which the plan used, was dropped"
+            },
+            "causeAtOpen": "MISSING_INDEX",
+            "evidence": [
+              "mean time 0.08 ms -\u003e 16.17 ms (206.4x) over 96 calls",
+              "plan access billing.invoices: Index Scan using invoices_account_issued_idx -\u003e Seq Scan",
+              "plan aggregation :  -\u003e Sort",
+              "index invoices_account_issued_idx on billing.invoices dropped at 13:15:47"
+            ],
+            "planChanges": [
+              {
+                "kind": "access",
+                "relation": "billing.invoices",
+                "before": "Index Scan using invoices_account_issued_idx",
+                "after": "Seq Scan"
+              },
+              {
+                "kind": "aggregation",
+                "before": "",
+                "after": "Sort"
+              }
+            ],
+            "planBefore": "Limit  (rows=2 cost=8.9)\n  Index Scan on invoices using invoices_account_issued_idx  (rows=20 cost=84.8)\n",
+            "planAfter": "Limit  (rows=1 cost=6883.5)\n  Gather Merge  (rows=12 cost=6884.8)\n    Sort  (rows=12 cost=5883.4)\n      Seq Scan on invoices  (rows=12 cost=5883.2)\n",
+            "suggestion": {
+              "text": "Recreate the index without blocking writes.",
+              "sql": "CREATE INDEX CONCURRENTLY invoices_account_issued_idx ON billing.invoices USING btree (account_id, issued_at DESC);"
+            },
+            "resolvedAt": "2026-11-08T13:16:19.958248937+01:00",
+            "resolvedMs": 0.06959135164804169,
+            "verification": "back to 0.07 ms from a worst of 91.00 ms (baseline 0.08 ms); after index invoices_account_issued_idx was created",
+            "worstMs": 91.00294606086922
+          }
+        ]
+      }
+    ]
+  },
+  "timeline": {
+    "start": "2026-11-08T13:15:27.957262358+01:00",
+    "faultAt": "2026-11-08T13:15:47.957747693+01:00",
+    "fixAt": "2026-11-08T13:16:12.965847603+01:00",
+    "end": "2026-11-08T13:16:34.270932185+01:00"
+  }
+}
